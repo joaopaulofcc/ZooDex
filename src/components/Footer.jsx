@@ -129,10 +129,8 @@ const Footer = () => {
         Aplicamos a classe `styles.disclaimer` a esta div.
       */}
       <div className={styles.disclaimer}>
-        <p>
-          Zaps "Coleção Animais em Extinção - 1998" &copy; Chicletes Ping Pong.
-        </p>
-        <p>Projeto com fins educacionais e não comerciais,.</p>
+        <p>Zaps "Coleção Animais em Extinção" &copy; Chicletes Ping Pong.</p>
+        <p>Projeto com fins educacionais e não comerciais.</p>
         {/*
           Poderíamos adicionar mais informações aqui, como:
           - Links para as fontes dos dados dos animais.

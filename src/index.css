@@ -2,264 +2,448 @@
 
 /* ===================================================================================
    ARQUIVO: index.css
-   DESCRIÇÃO: Este é o arquivo CSS global principal da sua aplicação.
-              Os estilos definidos aqui têm o potencial de afetar todos os elementos
-              da sua aplicação, a menos que sejam especificamente sobrescritos
-              por regras mais específicas (como as de CSS Modules nos componentes
-              ou estilos inline).
+   Olá, futuro(a) Mestre Jedi do CSS!  Padawan, bem-vindo(a) ao `index.css`!
+   Este arquivo é como o "Manual de Estilo Universal" ou as "Leis Fundamentais do Design"
+   para TODA a sua aplicação ZooDex. Pense nele como o alicerce de um prédio:
+   ele define as regras básicas de aparência que todos os outros "andares" (componentes)
+   vão seguir, a menos que um andar específico tenha uma regra muito particular.
 
-              É um bom lugar para:
-              1. Definir variáveis CSS globais (Custom Properties) para cores, fontes, etc.
-              2. Aplicar "resets" ou "normalizações" de CSS para garantir uma base
-                 consistente entre diferentes navegadores.
-              3. Definir estilos base para elementos HTML comuns como <body>, <h1>-<h6>, <p>, <a>, etc.
+   POR QUE ESTE ARQUIVO É TÃO IMPORTANTE?
+   Aqui é o lugar ideal para:
+
+   1. ✨ DEFINIR VARIÁVEIS CSS GLOBAIS (Custom Properties) no `:root` ✨
+      Imagine que você tem uma paleta de cores para o ZooDex (nosso verde, nosso laranja).
+      Em vez de repetir os códigos dessas cores (ex: `#2e7d32`) em dezenas de lugares
+      diferentes, você cria uma "gavetinha" com um nome fácil (ex: `--cor-principal-verde`)
+      e guarda a cor lá. Depois, sempre que precisar dessa cor, você só diz: "pegue da
+      gavetinha `--cor-principal-verde`". Se um dia o chefe pedir para mudar o verde para
+      um tom um pouquinho diferente, você só muda na gavetinha, e TODO o site atualiza!
+      Isso se chama DRY (Don't Repeat Yourself - Não se Repita) e torna a manutenção
+      um sonho!
+
+   2. 🧼 APLICAR "RESETS" OU "NORMALIZAÇÕES" DE CSS (Opcional, mas boa prática) 🧼
+      Cada navegador (Chrome, Firefox, Safari, etc.) tem suas teimosias e aplica alguns
+      estilos padrão bem básicos aos elementos HTML (tipo uma margem aqui, um tamanho de
+      fonte ali). Um "CSS Reset" é como dar um "reset de fábrica": ele tira QUASE TODOS
+      esses estilos padrão, para você começar do zero, com total controle.
+      Uma "Normalize CSS" é mais gentil: ela não tira tudo, mas tenta fazer com que os
+      elementos se comportem de forma MAIS CONSISTENTE entre os diferentes navegadores,
+      corrigindo algumas dessas teimosias.
+      (Neste arquivo, faremos um mini-reset tirando a margem do `<body>` e aplicando
+      `box-sizing: border-box;` em tudo).
+
+   3. 🎨 DEFINIR ESTILOS BASE PARA ELEMENTOS HTML COMUNS 🎨
+      Aqui podemos dizer como queremos que o `<body>` da página se pareça, qual a fonte
+      padrão, a cor do texto, etc. Também podemos definir estilos básicos para títulos
+      (`<h1>` a `<h6>`), parágrafos (`<p>`), links (`<a>`), se quisermos um visual
+      padrão em toda a aplicação.
+
+   COMO ELE SE RELACIONA COM OS ARQUIVOS `.module.css` DOS SEUS COMPONENTES?
+   - `index.css` (este arquivo): É o CHEFÃO GLOBAL. Seus estilos podem afetar tudo.
+   - Arquivos `.module.css` (ex: `Header.module.css`, `AnimalCard.module.css`):
+     São os "estilos particulares" de cada componente. Eles usam uma mágica chamada
+     CSS Modules, que dá nomes secretos e únicos para as classes CSS (ex: `.titulo` no
+     `Header.module.css` vira algo como `Header_titulo__XyZ123`).
+     Isso é INCRÍVEL porque evita que um estilo `.titulo` do Header afete um `.titulo`
+     do Footer, por exemplo. Cada um no seu quadrado!
+     MAS, os estilos dos `.module.css` ainda podem HERDAR coisas do `index.css`
+     (como a `font-family` definida no `body` ou as variáveis CSS do `:root`).
+
+   Preparado(a) para desvendar os segredos deste arquivo? Vamos lá! 🕵️‍♀️🚀
    =================================================================================== */
 
 /* --- DEFINIÇÃO DE VARIÁVEIS CSS GLOBAIS (:root) --- */
 /*
-  O seletor ':root' representa o elemento raiz do documento HTML (a tag <html>).
-  É o local padrão e recomendado para declarar variáveis CSS globais.
-  Variáveis CSS (também chamadas de Custom Properties) são prefixadas com '--' (dois hifens).
-  Elas permitem que você armazene valores (como cores, tamanhos de fonte, espaçamentos)
-  em um local e os reutilize em todo o seu CSS.
-  Isso torna seu design mais consistente e fácil de manter. Se você precisar alterar
-  uma cor primária, por exemplo, basta alterá-la aqui e a mudança se refletirá
-  em todos os lugares onde a variável é usada.
+  ALUNOS, ESTA É A SEÇÃO MÁGICA DAS GAVETINHAS! 🧙‍♂️✨
+  O seletor `:root` é super especial. Ele aponta para o elemento mais alto do seu
+  documento HTML, que é a tag `<html>`. É aqui que guardamos nossas "ferramentas
+  de pintura" globais: as Variáveis CSS (ou "Custom Properties").
+
+  COMO FUNCIONAM?
+  - Nome da Variável: Sempre começa com DOIS HÍFENS, tipo `--nome-da-minha-variavel`.
+  - Definir o Valor: Você diz `nome-da-variavel: valor;` (ex: `--cor-do-ceu: azul;`).
+  - Usar a Variável: Em qualquer outro lugar do seu CSS, você usa `var(--nome-da-minha-variavel)`.
+    Exemplo: `h1 { color: var(--cor-do-ceu); }`
+
+  POR QUE ISSO É TÃO LEGAL?
+  1. CONSISTÊNCIA TOTAL: Sua paleta de cores, suas fontes, seus espaçamentos ficam
+                       todos organizadinhos aqui. Todo o site vai usar as mesmas "tintas".
+  2. MANUTENÇÃO DE MESTRE: Se o cliente pedir "Pode deixar esse verde um pouco mais escuro?",
+                          você não precisa caçar em 20 arquivos CSS. Muda SÓ AQUI no `:root`,
+                          e *BUM!* Todo o site atualiza. É quase como ter superpoderes!
+  3. TEMAS? FÁCIL!: Quer um tema escuro? É só criar um conjunto de variáveis para o tema escuro
+                   e aplicá-las (geralmente mudando as variáveis no `:root` com JavaScript
+                   ou com uma classe no `body`).
+  4. CÓDIGO QUE FALA: Usar `background-color: var(--cor-de-fundo-do-alerta);` é muito
+                     mais fácil de entender do que `background-color: #FFEEBA;`.
+                     Seu "eu do futuro" (e outros colegas devs) vão te agradecer!
 */
 :root {
-  /* -- TIPOGRAFIA -- */
-  /* Famílias de fontes principais para a aplicação. */
-  --font-primary: "Nunito", Arial, sans-serif; /* Fonte principal, usada para títulos e elementos de destaque.
-                                                 "Nunito" é a preferida. Arial e sans-serif são fallbacks
-                                                 caso Nunito não esteja disponível ou não carregue. */
-  --font-secondary: "Open Sans", Verdana, sans-serif; /* Fonte secundária, para texto corrido e parágrafos. */
+  /* -- SEÇÃO DE TIPOGRAFIA (NOSSAS LETRINHAS!) -- */
+  /* Aqui definimos as "famílias de fontes" que vamos usar.
+     É como escolher o tipo de caneta para escrever.
+     A ordem é importante: o navegador tenta a primeira, se não achar, tenta a segunda, e assim por diante.
+     `sans-serif` no final é o "plano B universal": uma fonte sem serifa padrão do sistema do usuário. */
+  --font-primary: "Nunito", Arial, sans-serif; /* Fonte principal. Usamos para títulos, destaques,
+                                                 coisas que precisam chamar a atenção. "Nunito" é a nossa estrela!
+                                                 Arial e sans-serif são os "dublês" caso Nunito falte ao show. */
+  --font-secondary: "Open Sans", Verdana, sans-serif; /* Fonte secundária. Ótima para textos mais longos,
+                                                        parágrafos, onde a leitura fácil é prioridade. */
 
-  /* -- PALETA DE CORES PRINCIPAL -- */
-  /* Cores base que definem a identidade visual do ZooDex. */
-  --color-bg-light: #f0f2f5; /* Cinza muito claro, usado como cor de fundo principal da página. */
-  --color-text-light: #212529; /* Cinza escuro (quase preto), para texto principal com boa legibilidade. */
-  --color-text-muted: #6c757d; /* Cinza médio, para textos secundários, placeholders, ou informações menos importantes. */
-  --color-primary: #2e7d32; /* Verde Floresta Escuro: cor primária da marca, usada para destaques importantes. */
-  --color-primary-darker: #1b4d1e; /* Um tom mais escuro da cor primária, útil para :hover ou bordas. */
-  --color-secondary: #ef6c00; /* Laranja Queimado: cor secundária, para botões de ação, alertas, etc. */
-  --color-secondary-darker: #c65400; /* Um tom mais escuro da cor secundária. */
-  --color-card-bg: #ffffff; /* Branco, usado como cor de fundo para os cards dos animais. */
+  /* -- SEÇÃO DA PALETA DE CORES (NOSSO ARCO-ÍRIS PARTICULAR!) -- */
+  /* As cores que vão dar a cara do ZooDex! */
+  --color-bg-light: #f0f2f5; /* Um cinza MUITO clarinho. Perfeito para o fundo principal da página,
+                                 dá uma sensação de limpeza e não cansa os olhos. */
+  --color-text-light: #212529; /* Um cinza bem escuro, quase preto. Excelente para o texto principal,
+                                  pois tem ótimo contraste com fundos claros, facilitando a leitura. */
+  --color-text-muted: #6c757d; /* Cinza de tom médio. "Muted" significa "suave" ou "discreto".
+                                  Usamos para textos secundários, dicas em campos de formulário
+                                  (placeholders), ou informações que não precisam gritar por atenção. */
+  --color-primary: #2e7d32; /* VERDE FLORESTA ESCURO! 🌲 Esta é a NOSSA COR PRIMÁRIA, a cor da marca ZooDex!
+                               Usada em elementos importantes que queremos que o usuário note logo de cara,
+                               como o cabeçalho, títulos principais, botões importantes. */
+  --color-primary-darker: #1b4d1e; /* Um tom AINDA MAIS ESCURO do nosso verde primário.
+                                     Ideal para quando o usuário passa o mouse sobre um botão verde
+                                     (efeito `:hover`), ou para bordas sutis que combinam. */
+  --color-secondary: #ef6c00; /* LARANJA QUEIMADO! 🔥 Nossa COR SECUNDÁRIA.
+                                 Cores secundárias são como o "melhor amigo" da cor primária.
+                                 Usamos para criar contraste, para botões de ação importantes
+                                 (CTAs - Call to Action), alertas, ou outros elementos que precisam
+                                 de um "cheguei!" visual. */
+  --color-secondary-darker: #c65400; /* Um tom mais escuro do nosso laranja secundário, para os mesmos
+                                        usos do `--color-primary-darker` (hovers, etc.). */
+  --color-card-bg: #ffffff; /* BRANCO PURO. Perfeito para o fundo dos "cards" dos animais,
+                               fazendo com que as informações e fotos dos bichinhos se destaquem
+                               do fundo da página. */
   --color-shadow: rgba(
     0,
-    0,
-    0,
-    0.1
-  ); /* Preto com 10% de opacidade, para sombras suaves. */
-  --color-border-light: #dee2e6; /* Cinza claro, para bordas sutis em inputs, cards, etc. */
-  --color-error: #dc3545; /* Vermelho, para mensagens de erro ou validação. */
-  --color-success: #198754; /* Verde, para mensagens de sucesso. */
+    /* Sem deslocamento horizontal da sombra. */ 0,
+    /* Sem deslocamento vertical da sombra. (Ajustaremos isso no `box-shadow` real) */
+      0,
+    /* Cor base da sombra: Preto. */ 0.1
+      /* Opacidade da sombra: 10%. Isso a torna suave e sutil. */
+  ); /* Usaremos esta variável para criar sombras consistentes. */
+  --color-border-light: #dee2e6; /* Cinza bem clarinho, ótimo para bordas discretas em campos de
+                                    formulário (inputs), divisórias entre seções, ou nos cards. */
+  --color-error: #dc3545; /* VERMELHO ALERTA! Universalmente entendido como erro, perigo ou aviso importante.
+                            Usaremos para mensagens de erro de formulário, etc. */
+  --color-success: #198754; /* VERDE ESPERANÇA! Usado para indicar que algo deu certo,
+                             uma confirmação, uma mensagem de sucesso. */
 
-  /* -- CORES DE NÍVEL DE EXTINÇÃO -- */
-  /* Cores específicas para cada status de conservação dos animais.
-     Essas cores ajudam na identificação visual rápida do nível de risco. */
-  --color-lc: #aed581; /* Pouco Preocupante (Least Concern) */
-  --color-nt: #dce775; /* Quase Ameaçado (Near Threatened) */
-  --color-vu: #ffee58; /* Vulnerável (Vulnerable) */
-  --color-en: #ffa726; /* Em Perigo (Endangered) */
-  --color-cr: #ef5350; /* Criticamente em Perigo (Critically Endangered) */
-  --color-ew: #7e57c2; /* Extinto na Natureza (Extinct in the Wild) */
-  --color-ex: #616161; /* Extinto (Extinct) */
-  --color-dd: #bdbdbd; /* Dados Insuficientes (Data Deficient) */
-  --color-ne: #e0e0e0; /* Não Avaliado (Not Evaluated) */
-  --color-default-extinction: #cccccc; /* Cor padrão para status de extinção desconhecido ou não mapeado. */
+  /* -- SEÇÃO DE CORES PARA NÍVEIS DE EXTINÇÃO (SEMÁFORO DA NATUREZA!) -- */
+  /* Cada status de conservação dos animais (da Lista Vermelha da IUCN) terá uma cor.
+     Isso cria uma identificação visual RÁPIDA e intuitiva do nível de risco.
+     LC = Least Concern (Pouco Preocupante), NT = Near Threatened (Quase Ameaçado), etc. */
+  --color-lc: #aed581; /* Verde suave, tranquilidade. */
+  --color-nt: #dce775; /* Amarelo-esverdeado, um pouco de atenção. */
+  --color-vu: #ffee58; /* Amarelo, alerta! */
+  --color-en: #ffa726; /* Laranja, perigo se aproximando! */
+  --color-cr: #ef5350; /* Vermelho, perigo crítico! */
+  --color-ew: #7e57c2; /* Roxo, tristeza... extinto na natureza. */
+  --color-ex: #616161; /* Cinza escuro, luto... extinto. */
+  --color-dd: #bdbdbd; /* Cinza médio, mistério... dados insuficientes. */
+  --color-ne: #e0e0e0; /* Cinza claro, ainda não sabemos... não avaliado. */
+  --color-default-extinction: #cccccc; /* Uma cor "neutra" se o status for desconhecido. */
 
-  /* -- TAMANHOS E ESPAÇAMENTOS -- */
-  /* Raio da Borda (para cantos arredondados) */
-  --border-radius: 8px; /* Raio de borda padrão, para elementos maiores como cards. */
-  --border-radius-small: 4px; /* Raio de borda menor, para botões, inputs, tags. */
+  /* -- SEÇÃO DE TAMANHOS E ESPAÇAMENTOS (NOSSAS RÉGUAS E COMPASSOS!) -- */
+  /* Raio da Borda (Border Radius): Para deixar os cantos dos elementos arredondados,
+     dando um visual mais moderno e suave. */
+  --border-radius: 8px; /* Um raio de borda padrão, bom para elementos maiores como cards, modais. */
+  --border-radius-small: 4px; /* Um raio menor, para elementos menores como botões, inputs, tags. */
 
-  /* Espaçamentos (pode ser expandido conforme necessário) */
-  --spacing-small: 0.5rem; /* 8px se 1rem = 16px */
-  --spacing-medium: 1rem; /* 16px */
-  --spacing-large: 1.5rem; /* 24px */
+  /* Espaçamentos (Paddings e Margins):
+     Definir alguns tamanhos de espaçamento padrão ajuda a manter o "ritmo vertical"
+     (o fluxo visual de cima para baixo) e a consistência em toda a página.
+     Podemos adicionar mais tamanhos conforme precisarmos. `rem` é ótimo aqui! */
+  --spacing-small: 0.5rem; /* 8px (se 1rem = 16px). Para pequenos espaços. */
+  --spacing-medium: 1rem; /* 16px. Um espaçamento comum. */
+  --spacing-large: 1.5rem; /* 24px. Para quando precisamos de mais respiro. */
 
-  /* Z-indexes (para controle de empilhamento de camadas) */
-  --z-index-header: 100;
-  --z-index-modal: 1000;
-  --z-index-dropdown: 500;
+  /* Z-indexes (Controle de Camadas - Quem Fica por Cima?):
+     `z-index` decide a ordem de "empilhamento" de elementos que se sobrepõem na tela.
+     Um elemento com `z-index` MAIOR aparece NA FRENTE de um com `z-index` MENOR.
+     Muito útil para coisas como menus que abrem por cima, janelas modais,
+     cabeçalhos que ficam fixos no topo, etc. */
+  --z-index-header: 100; /* O header principal da aplicação deve ficar acima da maioria do conteúdo. */
+  --z-index-modal: 1000; /* Janelas modais (pop-ups) devem ficar acima de TUDO. */
+  --z-index-dropdown: 500; /* Menus dropdown ficam acima do conteúdo normal, mas abaixo de modais. */
 }
 
 /* --- RESET BÁSICO E BOX-SIZING GLOBAL --- */
-/* ALUNOS: Esta é uma adição MUITO IMPORTANTE e uma prática recomendada! */
-*,
-*::before,
+/* ALUNOS, ATENÇÃO A ESTA REGRA! É UM PEQUENO TRUQUE COM UM GRANDE IMPACTO! */
+*,  /* O asterisco `*` é o "seletor universal" - ele seleciona TODOS os elementos HTML na página. */
+*::before, /* Seleciona os pseudo-elementos `::before` de todos os elementos. */
 *::after {
-  /* `box-sizing: border-box;` muda como a largura e altura dos elementos são calculadas.
-     Por padrão (content-box), width/height definem SÓ a área do conteúdo.
-     Padding e border são ADICIONADOS FORA dessa área, o que pode levar a surpresas
-     quando você define `width: 100%` e adiciona padding.
-     Com `border-box`, o padding e a border ficam DENTRO da width/height que você define.
-     Isso torna os layouts MUITO mais previsíveis e fáceis de gerenciar. */
+  /* Seleciona os pseudo-elementos `::after` de todos os elementos. */
+
+  /* `box-sizing: border-box;` - A MÁGICA DO BOX MODEL INTUITIVO!
+     Imagine que cada elemento HTML é uma caixa. Por padrão no CSS (`box-sizing: content-box;`),
+     se você define:
+       `width: 100px;`
+       `padding: 10px;`
+       `border: 1px solid black;`
+     A largura TOTAL da caixa na tela NÃO será 100px! Será:
+       100px (conteúdo) + 10px (padding esquerdo) + 10px (padding direito) +
+       1px (borda esquerda) + 1px (borda direita) = 122px. Que confusão!
+
+     COM `box-sizing: border-box;`, a história muda:
+     A `width` (ou `height`) que você define agora INCLUI o `padding` e a `border`.
+     Então, com `width: 100px; padding: 10px; border: 1px solid black; box-sizing: border-box;`,
+     a largura TOTAL da caixa na tela será EXATAMENTE 100px. O padding e a borda
+     ficam "para dentro".
+     ISSO TORNA OS LAYOUTS MUITO MAIS PREVISÍVEIS E FÁCEIS DE GERENCIAR, especialmente
+     quando você trabalha com porcentagens (como `width: 100%;`) e paddings.
+     É uma das primeiras coisas que muitos desenvolvedores colocam em seus CSS globais! */
   box-sizing: border-box;
-  /* Opcional: Remover margens e paddings padrão de todos os elementos para um "reset" mais limpo.
-     Muitos resets CSS fazem isso. Para este projeto, `margin: 0;` no `body` já ajuda bastante.
-     Se você decidir adicionar, teste bem, pois pode afetar o espaçamento de elementos
-     como parágrafos e títulos que têm margens padrão úteis.
-  margin: 0;
-  padding: 0;
-  */
+
+  /* ALUNOS: DICA OPCIONAL DE "RESET" MAIS COMPLETO
+     Muitos desenvolvedores gostam de começar removendo TODAS as margens e paddings
+     padrão de TODOS os elementos, para ter controle total desde o início.
+     Se você quisesse fazer isso, adicionaria:
+       margin: 0;
+       padding: 0;
+     AQUI DENTRO DESTE SELETOR `*, *::before, *::after`.
+     No entanto, isso pode ser um pouco "agressivo", pois remove espaçamentos padrão
+     que às vezes são úteis (como a margem entre parágrafos).
+     Para este projeto, `margin: 0;` no `body` (que veremos abaixo) já nos dá uma
+     boa base, e o `box-sizing: border-box;` é o mais importante aqui. */
 }
 
 /* --- ESTILOS BASE PARA ELEMENTOS HTML --- */
 
-/* Estilos aplicados à tag <html> e <body> para definir comportamentos básicos da página. */
+/* Estilos aplicados diretamente à tag `<html>` (o elemento raiz). */
 html {
-  font-size: 16px; /* Define o tamanho base da fonte para a unidade 'rem'.
-                      1rem será igual a 16px. Ajustar este valor pode escalar
-                      todos os elementos que usam 'rem' proporcionalmente. */
-  scroll-behavior: smooth; /* Habilita rolagem suave quando o usuário clica em links âncora (#). */
-  /* ALUNOS: Adicionar `overflow-x: hidden;` aqui pode ser uma medida "drástica"
-     para evitar barras de rolagem horizontais indesejadas, mas CUIDADO!
-     Isso pode MASCARAR o problema real de um elemento que está vazando.
-     É melhor encontrar e corrigir o elemento culpado. No entanto, para garantir
-     que a página NUNCA tenha rolagem horizontal devido a pequenos erros,
-     alguns desenvolvedores adicionam aqui. */
-  /* overflow-x: hidden; */ /* Use com cautela. */
+  /* `font-size: 16px;` define o tamanho da fonte base para a unidade `rem`.
+     Isso significa que, neste projeto, `1rem` será igual a `16px`.
+     Se o usuário mudar o tamanho da fonte padrão no navegador DELE, este valor base
+     também pode mudar, e todos os tamanhos em `rem` na sua aplicação vão escalar
+     proporcionalmente. Isso é ÓTIMO para acessibilidade! */
+  font-size: 16px;
+
+  /* `scroll-behavior: smooth;` faz com que, se você tiver links internos na página
+     (ex: `<a href="#secao-contato">Contato</a>`) ou usar JavaScript para rolar a página
+     (como `window.scrollTo`), a rolagem seja ANIMADA SUAVEMENTE, em vez de um salto brusco.
+     Um toque de elegância! */
+  scroll-behavior: smooth;
+
+  /* ALUNOS: CUIDADO COM `overflow-x: hidden;` AQUI!
+     Alguns desenvolvedores colocam `overflow-x: hidden;` na tag `<html>` ou `<body>`
+     como uma forma "rápida" de impedir barras de rolagem horizontais indesejadas,
+     que aparecem quando algum elemento está "vazando" para fora da largura da tela.
+     PORÉM, isso pode ser perigoso porque MASCARA o problema real. É como varrer
+     a sujeira para debaixo do tapete. O ideal é ENCONTRAR e CORRIGIR o elemento
+     que está causando o vazamento.
+     Se, DEPOIS de ter certeza que não há vazamentos, você ainda quiser garantir que
+     nenhuma barra de rolagem horizontal apareça por acidente, você poderia adicionar,
+     mas use com extrema cautela. Para este projeto, vamos tentar resolver os vazamentos
+     primeiro.
+     Exemplo (NÃO RECOMENDADO COMO PRIMEIRA SOLUÇÃO):
+     overflow-x: hidden;
+  */
 }
 
+/* Estilos aplicados diretamente à tag `<body>` (o corpo principal da sua página). */
 body {
-  font-family: var(
-    --font-secondary
-  ); /* Define a família de fontes padrão para todo o texto da página. */
-  background-color: var(
-    --color-bg-light
-  ); /* Define a cor de fundo padrão da página. */
-  color: var(--color-text-light); /* Define a cor padrão do texto. */
-  margin: 0; /* Remove as margens padrão que os navegadores aplicam ao <body>.
-                Isso dá mais controle sobre o layout. */
-  line-height: 1.6; /* Define a altura da linha padrão para o texto.
-                       Um valor de 1.6 (sem unidade) significa 1.6 vezes o tamanho da fonte,
-                       o que geralmente melhora a legibilidade. */
+  /* Define a família de fontes padrão para TODO o texto dentro do `<body>`.
+     Usamos nossa variável `--font-secondary` (Open Sans). */
+  font-family: var(--font-secondary);
 
-  /* Melhorias para renderização de fontes (anti-aliasing):
-     Estas propriedades tentam suavizar as bordas das fontes para melhor aparência. */
-  -webkit-font-smoothing: antialiased; /* Para navegadores baseados em WebKit (Chrome, Safari, Edge). */
-  -moz-osx-font-smoothing: grayscale; /* Para Firefox em macOS. */
+  /* Define a cor de fundo padrão da PÁGINA INTEIRA.
+     Usamos nossa variável `--color-bg-light` (o cinza bem clarinho). */
+  background-color: var(--color-bg-light);
 
-  /* Garante que o body possa ocupar pelo menos toda a altura da janela do navegador. */
-  min-height: 100vh; /* 'vh' é uma unidade relativa à altura da viewport (janela do navegador).
-                        100vh = 100% da altura da viewport. */
-  display: flex; /* Configura o body para usar Flexbox. */
-  flex-direction: column; /* Faz com que os filhos diretos do body (como #root) se empilhem verticalmente. */
+  /* Define a cor padrão do TEXTO em toda a página.
+     Usamos nossa variável `--color-text-light` (o cinza escuro). */
+  color: var(--color-text-light);
 
-  /* ALUNOS: Para combater o problema de "zoom out" e garantir que o body não seja
-     influenciado por conteúdo que "vaza", podemos adicionar `overflow-x: hidden;` aqui também.
-     Isso cortará qualquer conteúdo que tente ser mais largo que a tela.
-     Novamente, o ideal é consertar o elemento que está vazando, mas isso pode ser
-     uma salvaguarda. */
-  overflow-x: hidden; /* Impede a rolagem horizontal no corpo da página. */
+  /* `margin: 0;` - IMPORTANTE! Remove as margens padrão que a maioria dos navegadores
+     coloca automaticamente na tag `<body>`. Isso garante que seu conteúdo comece
+     EXATAMENTE no canto da tela, sem espaços inesperados. */
+  margin: 0;
+
+  /* `line-height: 1.6;` define a altura da linha padrão para o texto.
+     Um valor sem unidade (como 1.6) significa "1.6 vezes o tamanho da fonte atual".
+     Uma boa altura de linha (geralmente entre 1.4 e 1.8) torna os parágrafos
+     MUITO mais fáceis e agradáveis de ler. */
+  line-height: 1.6;
+
+  /* Melhorias para a renderização de fontes (conhecido como "anti-aliasing"):
+     Estas propriedades são dicas para o navegador tentar suavizar as bordas das
+     letras, fazendo com que pareçam menos "serrilhadas" e mais nítidas. */
+  -webkit-font-smoothing: antialiased; /* Para navegadores baseados em WebKit (Chrome, Safari, Edge novo). */
+  -moz-osx-font-smoothing: grayscale; /* Para Firefox em sistemas macOS. */
+
+  /* `min-height: 100vh;` - ESSENCIAL PARA O "STICKY FOOTER"!
+     `vh` é uma unidade de medida que significa "viewport height" (altura da janela de visualização).
+     `100vh` significa "100% da altura da janela do navegador".
+     Esta regra garante que o `<body>` ocupe, NO MÍNIMO, toda a altura da tela.
+     Se o conteúdo da sua página for curto, o `<body>` ainda assim se esticará até o final
+     da tela. Isso é crucial para que o rodapé (footer) possa ser "empurrado" para baixo
+     corretamente quando usamos Flexbox para o layout principal. */
+  min-height: 100vh;
+
+  /* `display: flex;` e `flex-direction: column;` no `<body>`:
+     Transformamos o `<body>` em um "container flex".
+     `flex-direction: column;` faz com que seus filhos diretos (no nosso caso,
+     o `<div id="root">` onde o React monta a aplicação) sejam empilhados
+     VERTICALMENTE. Isso também é parte da estratégia do "sticky footer". */
+  display: flex;
+  flex-direction: column;
+
+  /* ALUNOS: PARA COMBATER O PROBLEMA DE "ZOOM OUT" E BARRAS DE ROLAGEM HORIZONTAIS!
+     `overflow-x: hidden;` no `<body>` "corta" qualquer conteúdo que tente
+     ser mais largo que a tela. Se algum elemento estiver "vazando" para a direita,
+     ele será escondido e não forçará o navegador a dar zoom out ou mostrar uma
+     barra de rolagem horizontal.
+     ATENÇÃO: O ideal é sempre encontrar e corrigir o elemento que está causando
+     o vazamento. Usar `overflow-x: hidden;` é como um "band-aid" que resolve
+     o sintoma (a barra de rolagem ou o zoom out), mas não necessariamente a causa.
+     No entanto, para garantir que a experiência do usuário não seja quebrada por
+     pequenos vazamentos, esta é uma salvaguarda comum e útil. */
+  overflow-x: hidden;
 }
 
-/*
-  Estilos para o container principal do React (#root).
-  Esta é a <div id="root"></div> no seu 'public/index.html' onde a aplicação React é montada.
-*/
+/* Estilos para o container principal do React (`<div id="root">`).
+   Esta é a div no seu `public/index.html` onde toda a sua aplicação React
+   é "injetada" e renderizada. */
 #root {
-  display: flex; /* Também usa Flexbox. */
-  flex-direction: column; /* Organiza os componentes filhos principais (Header, Main, Footer) em coluna. */
-  flex-grow: 1; /* Faz com que o #root cresça para ocupar qualquer espaço vertical disponível no body.
-                   Isso é importante para que o 'margin-top: auto' no Footer funcione corretamente. */
-  width: 100%; /* Garante que o #root ocupe toda a largura. */
-  /* Se o #root também precisar impedir overflow, embora geralmente o body seja suficiente: */
-  /* overflow-x: hidden; */
+  display: flex; /* O `#root` também se torna um container flex. */
+  flex-direction: column; /* Seus filhos (o componente App.js) serão empilhados verticalmente. */
+
+  /* `flex-grow: 1;` - A MÁGICA FINAL DO "STICKY FOOTER"!
+     Se o `<body>` é um container flex vertical, `flex-grow: 1;` no `#root` (que é um filho
+     direto do `<body>`) faz com que o `#root` CRESÇA para ocupar TODO o espaço vertical
+     restante dentro do `<body>`.
+     Junto com `min-height: 100vh;` no `<body>` e `margin-top: auto;` no seu componente Footer,
+     isso garante que o Footer fique "grudado" no final da página, mesmo se o conteúdo
+     principal for curto. */
+  flex-grow: 1;
+
+  width: 100%; /* Garante que o `#root` ocupe toda a largura disponível do `<body>`. */
+
+  /* ALUNOS: `overflow-x: hidden;` aqui também?
+     Geralmente, colocar no `<body>` é suficiente. Se você ainda tiver problemas
+     de overflow horizontal que parecem originar de dentro da aplicação React,
+     você PODE adicionar `overflow-x: hidden;` aqui também, mas isso seria
+     um sinal mais forte de que algum componente React está causando o problema
+     e precisa ser investigado.
+     Exemplo (use se realmente necessário):
+     overflow-x: hidden;
+  */
 }
 
-/* --- ESTILIZAÇÃO DA BARRA DE ROLAGEM (OPCIONAL E ESPECÍFICO DO NAVEGADOR) --- */
-/*
-  Estes estilos customizam a aparência da barra de rolagem.
-  Funcionam principalmente em navegadores baseados em WebKit (Chrome, Safari, Edge).
-  Firefox tem sua própria forma de estilizar scrollbars (usando 'scrollbar-width' e 'scrollbar-color').
-  Esta é uma melhoria puramente estética e pode ser removida se não desejada.
-*/
+/* --- ESTILIZAÇÃO DA BARRA DE ROLAGEM (OPCIONAL E COSMÉTICO) --- */
+/* ALUNOS: Isto é um "extra" para deixar a barra de rolagem mais bonita!
+   Estes estilos customizam a aparência da barra de rolagem.
+   Eles funcionam principalmente em navegadores baseados em WebKit (como Chrome, Safari, Edge novo).
+   O Firefox tem sua própria maneira de estilizar scrollbars (usando as propriedades
+   `scrollbar-width` e `scrollbar-color`, que são mais simples mas menos customizáveis).
+   Esta é uma melhoria puramente estética e pode ser removida se você não gostar
+   ou quiser manter o visual padrão do navegador. */
+
+/* Para a barra de rolagem inteira (vertical e horizontal) */
 ::-webkit-scrollbar {
-  width: 10px; /* Largura da barra de rolagem vertical. */
-  height: 10px; /* Altura da barra de rolagem horizontal. */
+  width: 10px; /* Largura da barra de rolagem VERTICAL. */
+  height: 10px; /* Altura da barra de rolagem HORIZONTAL (se houver). */
 }
+
+/* Para o "caminho" ou a "trilha" por onde a barra de rolagem se move. */
 ::-webkit-scrollbar-track {
-  /* O "caminho" ou "trilha" por onde a barra de rolagem se move. */
-  background: #f1f1f1; /* Cor de fundo do caminho (um cinza claro). */
+  background: #f1f1f1; /* Cor de fundo do caminho (um cinza bem claro). */
   border-radius: 10px; /* Cantos arredondados para o caminho. */
 }
+
+/* Para o "polegar" (thumb) – a parte da barra que o usuário realmente arrasta. */
 ::-webkit-scrollbar-thumb {
-  /* O "polegar" ou a parte da barra que o usuário arrasta. */
   background: #a0a0a0; /* Cor do polegar (um cinza médio). */
   border-radius: 10px; /* Cantos arredondados para o polegar. */
-  border: 2px solid #f1f1f1; /* Adiciona uma pequena borda da cor do track para efeito. */
+  /* Uma pequena borda em volta do polegar, da mesma cor do track,
+     para dar um efeito de "espaçamento" e mais polimento. */
+  border: 2px solid #f1f1f1;
 }
+
+/* Quando o mouse está SOBRE o polegar da barra de rolagem. */
 ::-webkit-scrollbar-thumb:hover {
-  /* Quando o mouse está sobre o polegar. */
-  background: #777777; /* Cor mais escura para feedback. */
+  background: #777777; /* Cor fica um pouco mais escura para dar feedback visual. */
 }
 
 /* --- CLASSE UTILITÁRIA GLOBAL: .visually-hidden --- */
 /*
-  Esta classe é usada para esconder conteúdo visualmente, mas mantê-lo acessível
-  para leitores de tela. É uma técnica importante para acessibilidade (a11y).
-  Por exemplo, você pode ter um ícone que é autoexplicativo visualmente, mas
-  precisa de um texto descritivo para usuários de leitores de tela.
+  ALUNOS: ESTA CLASSE É UM TRUQUE DE MESTRE PARA ACESSIBILIDADE (a11y)!
+  Às vezes, você tem um elemento na tela que é visualmente óbvio (como um ícone de "X"
+  para fechar), mas que não tem texto para um leitor de tela anunciar.
+  Ou, você quer fornecer mais contexto para leitores de tela sem poluir a interface visual.
+
+  A classe `.visually-hidden` ESCONDE o conteúdo VISUALMENTE, mas o mantém
+  DISPONÍVEL para leitores de tela e outras tecnologias assistivas.
+  É a forma correta de esconder texto apenas para quem não pode ver a interface.
+  NÃO USE `display: none;` ou `visibility: hidden;` para isso, pois eles removem
+  o elemento completamente, inclusive para leitores de tela!
 */
 .visually-hidden {
-  position: absolute !important; /* Tira do fluxo normal e permite posicionamento preciso. '!important' é usado
-                                   com cautela, mas aqui garante que outras regras não interfiram. */
-  height: 1px;
-  width: 1px; /* Reduz o tamanho ao mínimo. */
-  overflow: hidden; /* Esconde qualquer conteúdo que exceda esse tamanho mínimo. */
+  position: absolute !important; /* Tira o elemento do fluxo normal da página.
+                                   `!important` é usado com MUITA cautela no CSS, mas aqui
+                                   é uma das poucas exceções onde é comum para garantir
+                                   que esta regra de acessibilidade sempre funcione. */
+  height: 1px; /* Reduz a altura e largura ao mínimo possível. */
+  width: 1px;
+  overflow: hidden; /* Esconde qualquer conteúdo que "vaze" desse tamanho minúsculo. */
+  /* `clip` e `clip-path` são técnicas para "cortar" o elemento,
+     tornando-o efetivamente invisível, mas ainda presente no DOM. */
   clip: rect(
     1px,
     1px,
     1px,
     1px
-  ); /* Técnica antiga, mas ainda eficaz para esconder conteúdo.
-                                   Define uma área de recorte minúscula. */
-  clip-path: inset(
-    50%
-  ); /* Técnica mais moderna para esconder, criando um clipe interno. */
-  white-space: nowrap; /* Impede que o texto quebre em várias linhas, caso haja. */
+  ); /* Técnica mais antiga, mas com bom suporte. */
+  clip-path: inset(50%); /* Técnica mais moderna e preferível. */
+  white-space: nowrap; /* Impede que o texto (se houver) quebre em várias linhas. */
   border: 0; /* Remove qualquer borda. */
-  margin: -1px; /* Move o elemento para fora da tela. */
+  margin: -1px; /* Um truque para garantir que o elemento de 1px não ocupe espaço visível. */
   padding: 0; /* Remove qualquer preenchimento. */
 }
 
 /* --- ESTILOS GLOBAIS PARA MENSAGENS DE CARREGAMENTO E ERRO --- */
 /*
-  Estas classes podem ser usadas em qualquer lugar na aplicação para exibir
-  mensagens de carregamento ou erro de forma consistente.
+  Estas classes são "utilitárias": podem ser usadas em qualquer lugar na sua aplicação
+  para exibir mensagens de "Carregando..." ou mensagens de erro de forma consistente.
+  Você as aplicaria a um <p> ou <div> no seu JSX quando necessário.
 */
 .loading-message,
 .error-message {
   text-align: center; /* Centraliza o texto da mensagem. */
-  font-size: 1.1rem; /* Tamanho da fonte um pouco maior para destaque. */
-  padding: var(--spacing-large) var(--spacing-medium); /* Usa variáveis de espaçamento. */
-  color: var(--color-text-muted); /* Cor de texto secundária. */
-  margin-top: 2rem;
+  font-size: 1.1rem; /* Tamanho da fonte um pouco maior para que a mensagem se destaque. */
+  /* Usa nossas variáveis de espaçamento para padding. */
+  padding: var(--spacing-large) var(--spacing-medium);
+  color: var(--color-text-muted); /* Cor de texto secundária (cinza suave). */
+  margin-top: 2rem; /* Bom espaço acima e abaixo da mensagem. */
   margin-bottom: 2rem;
 }
 
+/* Estilo específico para mensagens de ERRO. */
 .error-message {
-  color: var(
-    --color-error
-  ); /* Mensagens de erro usam a cor de erro definida. */
-  background-color: #f8d7da; /* Um fundo rosa claro para erros. */
-  border: 1px solid #f5c6cb; /* Borda rosa para erros. */
-  border-radius: var(--border-radius-small);
+  color: var(--color-error); /* Texto usa nossa cor de erro vermelha. */
+  background-color: #f8d7da; /* Um fundo rosa bem clarinho, comum para alertas de erro. */
+  border: 1px solid #f5c6cb; /* Borda rosa um pouco mais escura. */
+  border-radius: var(--border-radius-small); /* Cantos arredondados. */
 }
 
-/* --- (REMOVIDO DA SUGESTÃO ANTERIOR, POIS VOCÊ INDICOU QUE JÁ ESTAVA NO SEU CÓDIGO) --- */
-/* --- MELHORIA OPCIONAL: BOX-SIZING GLOBAL --- */
 /*
-  Pode ser útil adicionar isso para um comportamento mais intuitivo do Box Model:
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-  Isso faz com que 'padding' e 'border' sejam incluídos na largura e altura
-  totais de um elemento, em vez de serem adicionados a elas.
-  Muitos desenvolvedores consideram isso uma configuração base mais fácil de trabalhar.
-  Se você usa um "reset CSS" ou "normalize CSS" mais completo, ele pode já incluir isso.
+   ALUNOS: FIM DO ARQUIVO `index.css`!
+
+   O QUE APRENDEMOS (OU RELEMBRAMOS) DE IMPORTANTE AQUI?
+   - Variáveis CSS (`:root` e `var()`): Para um design consistente e fácil de manter.
+   - `box-sizing: border-box;`: Para um modelo de caixa mais intuitivo.
+   - Estilos Base para `html` e `body`: Definindo o alicerce da página.
+     - `margin: 0;` no `body` para remover espaçamentos padrão.
+     - `min-height: 100vh;` e `display: flex; flex-direction: column;` no `body`
+       (e `flex-grow: 1;` no `#root`) para a técnica do "sticky footer".
+     - `overflow-x: hidden;` no `body` como uma salvaguarda contra barras de rolagem
+       horizontais indesejadas (mas lembre-se de tentar consertar a causa raiz do overflow!).
+   - Acessibilidade: Com a classe `.visually-hidden`.
+   - Consistência: Com classes utilitárias como `.loading-message` e `.error-message`.
+
+   Este arquivo é o ponto de partida para o visual de toda a sua aplicação.
+   Agora, os CSS Modules dos seus componentes vão construir sobre esta base!
+   Parabéns por chegar até aqui! 🎉
 */

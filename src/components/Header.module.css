@@ -288,7 +288,7 @@
   width: 100%; /* Ocupa toda a largura do .searchContainer. */
   /* Padding e font-size no estado TOTALMENTE EXPANDIDO. */
   padding: 0.8rem 1rem;
-  font-size: 1rem;
+  font-size: 0.95rem;
   border-radius: var(--border-radius); /* Cantos arredondados. */
   border: 2px solid var(--color-border-light, #ced4da); /* Borda cinza clara. */
   color: var(--color-text-light); /* Cor do texto digitado. */
