@@ -18,7 +18,6 @@
     * Nível de Risco de Extinção (Menor para Maior, Maior para Menor)
     * Número do Tazo/Código (Crescente, Decrescente)
 * **Animal Surpresa:** Descubra um animal aleatoriamente com um clique!
-* **Paginação:** Navegue facilmente por grandes listas de animais.
 * **Design Responsivo:** Interface adaptável para visualização em desktops, tablets e smartphones.
 * **Interatividade:** Efeitos de "flip" nos cards e lightbox para visualização de imagens ampliadas.
 
@@ -40,6 +39,7 @@ Este projeto foi construído com as seguintes tecnologias:
 
 A estrutura de pastas do projeto está organizada da seguinte forma:
 
+```text
 zoodex/
 ├── build/                      # Arquivos da build de produção
 ├── public/                     # Arquivos estáticos (index.html, favicon, etc.)
@@ -70,7 +70,6 @@ zoodex/
 ├── package.json                # Metadados do projeto e dependências
 ├── pnpm-lock.yaml              # Lockfile do PNPM (gerenciador de pacotes)
 └── README.md                   # Este arquivo!
-
 
 ## 🛠️ Configuração e Instalação
 
@@ -137,22 +136,12 @@ O componente `App.js` é o cérebro da aplicação, gerenciando:
 
 ## 💡 Ideias para Melhorias Futuras
 
-* [ ] Adicionar testes unitários e de integração.
+* [ ] Adicionar o restante dos 80 tazos/animais.
+* [ ] Integração com uma API real para buscar dados dos animais, em vez de dados estáticos.
 * [ ] Implementar animações mais sofisticadas para transições de página/componente.
-* [ ] Permitir que o usuário altere o número de itens por página.
+* [ ] Implementar paginação.
 * [ ] Opção de favoritar animais.
 * [ ] Temas claro/escuro.
-* [ ] Internacionalização (i18n) para suportar múltiplos idiomas na interface.
-* [ ] Integração com uma API real para buscar dados dos animais, em vez de dados estáticos.
-
-## 🤝 Contribuições
-
-Contribuições são bem-vindas! Se você tem sugestões ou quer melhorar o projeto, sinta-se à vontade para:
-1.  Fazer um "Fork" do repositório.
-2.  Criar uma nova "Branch" (`git checkout -b minha-melhoria`).
-3.  Fazer suas alterações e "Commit" (`git commit -am 'Adiciona alguma melhoria incrível'`).
-4.  Fazer "Push" para a Branch (`git push origin minha-melhoria`).
-5.  Abrir um "Pull Request".
 
 ## 📄 Licença
 
