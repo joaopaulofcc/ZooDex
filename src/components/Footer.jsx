@@ -116,10 +116,7 @@ const Footer = () => {
                            (que calculamos acima para ser o ano atual) diretamente no texto.
         - `❤️`: Emojis são caracteres Unicode e podem ser usados diretamente no JSX/HTML.
       */}
-      <p>
-        &copy; {anoCorrente} ZooDex. Feito com amor e JavaScript ❤️ no
-        Unilavras.
-      </p>
+      <p>Feito com amor e JavaScript ❤️ no Unilavras.</p>
       <p>
         Um projeto educacional inspirado nos tazos clássicos e na importância da
         conscientização sobre a fauna.
@@ -133,13 +130,9 @@ const Footer = () => {
       */}
       <div className={styles.disclaimer}>
         <p>
-          Imagens dos Tazos "Coleção Animais em Extinção - 1998" &copy;
-          Chicletes Ping Pong.
+          Zaps "Coleção Animais em Extinção - 1998" &copy; Chicletes Ping Pong.
         </p>
-        <p>
-          Projeto com fins educacionais e não comerciais, focado na
-          conscientização sobre a fauna.
-        </p>
+        <p>Projeto com fins educacionais e não comerciais,.</p>
         {/*
           Poderíamos adicionar mais informações aqui, como:
           - Links para as fontes dos dados dos animais.

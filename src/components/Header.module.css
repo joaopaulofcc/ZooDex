@@ -2,289 +2,507 @@
 
 /* ===================================================================================
    ARQUIVO: Header.module.css
-   ... (Mantenha seus comentários iniciais)
-   NOVAS ALTERAÇÕES:
-    - Adicionados estilos para os spans dentro dos botões de ordenação
-      (.sortButtonText, .sortButtonTextDirection, .sortButtonIcon)
-      para permitir a troca entre texto completo e apenas ícones em
-      diferentes tamanhos de tela (responsividade).
-    - Ajustes nos media queries para esconder/mostrar esses spans e
-      modificar o padding dos botões de ordenação em telas menores.
+   Olá, futuro(a) mestre do CSS! Este arquivo é o coração da aparência do nosso
+   componente Header (o cabeçalho do ZooDex).
+   Usamos uma técnica chamada "CSS Modules". Isso significa que qualquer classe
+   que você definir aqui, como `.header`, será transformada em um nome único quando
+   o projeto for construído (algo como `Header_header__abc12`).
+   A GRANDE VANTAGEM: Seus estilos aqui NUNCA vão colidir acidentalmente com
+   estilos de outros componentes da aplicação. É como ter uma caixinha de LEGO
+   só para o Header, e as peças não se misturam com as de outras caixinhas!
+
+   O QUE VOCÊ VAI APRENDER AQUI (OU RELEMBRAR):
+    - Como estilizar os elementos básicos do header.
+    - O "Box Model": `padding` (espaço interno), `margin` (espaço externo).
+    - `box-sizing: border-box`: Um truque essencial para layouts previsíveis.
+    - Cores e Fontes: Usando variáveis CSS (`var(--minha-variavel)`) para consistência.
+    - Sombras (`box-shadow`): Para dar um toque de profundidade.
+    - Flexbox (`display: flex`): Para alinhar elementos de forma fácil e poderosa.
+        - `flex-direction`: Empilhar ou alinhar em linha.
+        - `align-items: center`: Alinhar no eixo cruzado.
+        - `justify-content`: Alinhar no eixo principal.
+        - `gap`: Espaço entre os itens do flex.
+    - Posicionamento (`position: sticky`): Para o header "grudento" no topo.
+    - `z-index`: Para controlar qual elemento fica por cima quando há sobreposição.
+    - Transições (`transition`): Para fazer as mudanças de estilo (como encolher)
+      acontecerem suavemente, com animação.
+    - Media Queries (`@media`): A MÁGICA do design responsivo! Fazemos o header
+      se adaptar a diferentes tamanhos de tela (celular, tablet, desktop).
+    - Abordagem "Mobile First": Estilizamos primeiro para telas pequenas e depois
+      adicionamos ou modificamos para telas maiores.
+    - Seletores CSS: Como "mirar" nos elementos HTML certos para aplicar estilos.
+    - Pseudo-classes (`:hover`, `:focus-visible`, `:active`): Para dar feedback visual
+      quando o usuário interage com os botões.
    =================================================================================== */
 
-/* ... (Seus estilos existentes para .header, .headerEncolhido, .logo, .title, etc., permanecem aqui) ... */
 /* --- ESTILO PRINCIPAL DO CABEÇALHO (.header) --- */
+/* Esta classe é aplicada ao elemento <header> no nosso Header.jsx.
+   É o container principal de todo o cabeçalho. */
 .header {
+  /* Cor de fundo: `var(--color-primary)` pega o valor de uma variável CSS
+       definida no arquivo `src/index.css` (no seletor `:root`).
+       Usar variáveis torna muito fácil mudar as cores principais do site todo
+       mexendo em um só lugar! */
   background-color: var(--color-primary);
+  /* Cor do texto: Define a cor padrão para QUALQUER texto dentro do .header
+       como branco, para dar um bom contraste com o fundo verde escuro. */
   color: white;
+
+  /* Padding (Espaçamento Interno): Define o espaço DENTRO das bordas do .header
+       e o seu conteúdo (logo, título, botões).
+       '1rem 1.5rem' significa:
+         - 1rem (geralmente 16 pixels, se a fonte base do navegador for 16px) de espaço
+           no TOPO e na BASE do header.
+         - 1.5rem (geralmente 24 pixels) de espaço nas LATERAIS (esquerda e direita).
+       Este é o nosso padding para o estado TOTALMENTE EXPANDIDO do header. */
   padding: 1rem 1.5rem;
+
+  /* Sombra (Box Shadow): Cria um efeito de "elevação" ou profundidade.
+       '0 3px 7px rgba(0, 0, 0, 0.18)' significa:
+         - 0: Sem deslocamento horizontal da sombra.
+         - 3px: Sombra deslocada 3 pixels PARA BAIXO.
+         - 7px: A sombra terá um "blur" (desfoque) de 7 pixels de raio.
+         - rgba(0, 0, 0, 0.18): Cor da sombra. É preto (`rgb(0,0,0)`) com 18% de opacidade (`0.18`). */
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.18);
+
+  /* Posição "Grudenta" (Sticky):
+       Faz com que o header se comporte como `position: relative` (segue o fluxo normal da página)
+       ATÉ que a rolagem da página o faça atingir a posição definida em `top`.
+       A partir daí, ele se comporta como `position: fixed`, "grudando" no topo. */
   position: sticky;
-  top: 0;
+  top: 0; /* O header vai "grudar" a 0 pixels do topo da janela do navegador. */
+
+  /* Ordem de Empilhamento (z-index):
+       Quando elementos se sobrepõem, o `z-index` decide qual fica "por cima".
+       Um número maior fica mais na frente.
+       `var(--z-index-header, 100)`: Tenta usar uma variável global `--z-index-header`.
+       Se ela não existir, usa o valor padrão `100`.
+       Isso garante que o header não seja coberto por outros elementos da página ao rolar. */
   z-index: var(--z-index-header, 100);
-  width: 100%;
+
+  width: 100%; /* Faz o header ocupar toda a largura da tela do usuário. */
+
+  /* Box Sizing - UMA DAS PROPRIEDADES MAIS IMPORTANTES PARA LAYOUTS!
+       Por padrão (`content-box`), a `width` e `height` de um elemento definem APENAS
+       a área do conteúdo. Padding e bordas são ADICIONADOS a essa largura/altura,
+       o que pode complicar os cálculos de layout.
+       Com `border-box`, a `width` e `height` que você define incluem o `padding` e a `border`.
+       Isso torna o dimensionamento de elementos MUITO mais intuitivo!
+       Ex: Um div com `width: 100px; padding: 10px; box-sizing: border-box;` terá
+       100px de largura total, com 10px de padding DENTRO desses 100px. */
   box-sizing: border-box;
+
+  /* Transição (Animation Suave):
+       Esta é a chave para o efeito de encolher/expandir o header de forma agradável.
+       Quando o `padding` do header muda (porque a classe `.headerEncolhido` foi adicionada/removida),
+       a mudança não será instantânea. Ela acontecerá ao longo de 0.3 segundos.
+       - `padding`: A propriedade que queremos animar.
+       - `0.3s`: A duração da animação (0.3 segundos).
+       - `ease-in-out`: O "ritmo" da animação (começa e termina suavemente).
+       - `height 0.3s ease-in-out`: Também podemos animar a altura, caso ela seja
+         afetada diretamente ou indiretamente pelas mudanças de padding. No nosso caso,
+         a mudança de padding afeta a altura, então é bom incluir. */
   transition: padding 0.3s ease-in-out, height 0.3s ease-in-out;
 }
 
+/* ESTADO ENCOLHIDO DO HEADER (.headerEncolhido)
+     Esta classe é ADICIONADA ao <header> pelo JavaScript (no Header.jsx)
+     SOMENTE quando estamos em uma tela de celular E o usuário rolou a página para baixo.
+     Quando esta classe está presente, os estilos aqui SOBRESCREVEM os do `.header` base. */
 .headerEncolhido {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  /* Padding reduzido para o estado ENCOLHIDO.
+       O padding lateral (1.5rem) não foi alterado aqui, então ele continua o mesmo
+       do `.header` base, graças à "cascata" do CSS. */
+  padding-top: 0.5rem; /* Metade do padding superior original. */
+  padding-bottom: 0.5rem; /* Metade do padding inferior original. */
+
+  /* Sombra um pouco mais sutil para o header encolhido. */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-.headerEncolhido .logoAndTitle {
-  gap: 0.5rem;
-}
-.headerEncolhido .logo {
-  height: 35px;
-}
-.headerEncolhido .title {
-  font-size: 1.8rem;
-}
+/* --- ORGANIZADORES INTERNOS DO HEADER --- */
 
+/* Wrapper Principal e seus Elementos Internos
+     Este `div` (.headerContentWrapper) ajuda a agrupar o logo/título e o botão "Animal Surpresa".
+     Usamos Flexbox aqui para controlar o alinhamento desses itens. */
 .headerContentWrapper {
-  display: flex;
+  display: flex; /* ATIVA O MODO FLEXBOX! Os filhos diretos deste div
+                      (que são .logoAndTitle e .randomButton) se tornam "itens flex". */
+
+  /* Direção do Flex (Mobile First - como os estilos base são para mobile):
+       Em telas pequenas, queremos que o bloco logo/título e o botão "Animal Surpresa"
+       fiquem um ABAIXO do outro (empilhados verticalmente). */
   flex-direction: column;
+
+  /* Alinhamento no Eixo Cruzado:
+       Quando `flex-direction` é `column`, o eixo principal é vertical.
+       O eixo cruzado é, portanto, horizontal.
+       `align-items: center;` centraliza os itens flex (logo/título e botão)
+       HORIZONTALMENTE dentro do `.headerContentWrapper`. */
   align-items: center;
+
+  /* Gap (Espaçamento entre Itens Flex):
+       Define o espaço ENTRE os itens flex.
+       Aqui, 0.8rem de espaço VERTICAL entre o bloco `.logoAndTitle` e o `.randomButton`. */
   gap: 0.8rem;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
+
+  /* Para que o conteúdo do header não fique esticado demais em telas muito largas: */
+  max-width: 1200px; /* Limita a largura máxima deste container. */
+  margin-left: auto; /* Usado em conjunto com `margin-right: auto` e `max-width` */
+  margin-right: auto; /* para CENTRALIZAR um elemento de bloco horizontalmente. */
+
+  /* Margem Inferior: Espaço ABAIXO deste grupo, antes do campo de busca.
+       Este é o valor para o estado TOTALMENTE EXPANDIDO do header. */
   margin-bottom: 1rem;
-  width: 100%;
+  width: 100%; /* Para que o wrapper ocupe a largura do `.header` (respeitando `max-width`). */
+
+  /* Transição para a margem inferior, para suavizar a mudança quando o header encolhe/expande
+       e o botão "Animal Surpresa" some/reaparece, alterando a altura deste bloco. */
   transition: margin-bottom 0.3s ease-in-out;
 }
+
+/* Quando o header está ENCOLHIDO (e o botão "Animal Surpresa" some no mobile):
+     Reduzimos a margem inferior para que o campo de busca não fique muito distante. */
 .headerEncolhido .headerContentWrapper {
   margin-bottom: 0.5rem;
 }
 
-.logoAndTitle {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  text-decoration: none;
-  color: inherit;
+/* Quando o header está ENCOLHIDO, o gap (espaço) entre o logo e o título também diminui. */
+.headerEncolhido .logoAndTitle {
+  gap: 0.5rem;
 }
+
+/* Container para o Logo e o Título
+     Agrupa o logo e o título para que fiquem sempre juntos e se alinhem corretamente. */
+.logoAndTitle {
+  display: flex; /* Flexbox para alinhar logo e título lado a lado. */
+  align-items: center; /* Alinha verticalmente o logo e o título (útil se tiverem alturas diferentes). */
+  gap: 0.8rem; /* Espaço padrão entre o logo e o título. */
+  text-decoration: none; /* Remove sublinhado se este grupo for um link. */
+  color: inherit; /* Herda a cor do texto do pai (no caso, branco do .header). */
+  /* Transição para o `gap`, caso ele mude (como no estado encolhido).
+       A animação de `gap` pode não ser suportada por todos os navegadores antigos,
+       mas é uma melhoria progressiva. */
+  transition: gap 0.3s ease-in-out;
+}
+
+/* --- ELEMENTOS INDIVIDUAIS DO HEADER --- */
+
 .logo {
+  /* Altura do logo no estado TOTALMENTE EXPANDIDO. */
   height: 45px;
-  width: auto;
+  width: auto; /* A largura se ajusta automaticamente para manter a proporção da imagem. */
+  /* `object-fit: contain;` garante que a imagem inteira caiba dentro do espaço
+       definido por `height` e `width:auto`, sem cortar ou distorcer. */
   object-fit: contain;
+  /* Transição para a altura, para animar a mudança quando o header encolhe/expande. */
   transition: height 0.3s ease-in-out;
 }
+/* Quando o header está ENCOLHIDO, o logo fica menor. */
+.headerEncolhido .logo {
+  height: 35px;
+}
+
 .title {
-  font-family: var(--font-primary);
-  font-weight: 800;
+  font-family: var(
+    --font-primary
+  ); /* Usa a fonte primária definida globalmente. */
+  font-weight: 800; /* Peso da fonte (Extra Bold). */
+  /* Tamanho da fonte no estado TOTALMENTE EXPANDIDO. */
   font-size: 2rem;
-  line-height: 1.1;
-  margin: 0;
-  letter-spacing: -0.5px;
-  color: white;
+  line-height: 1.1; /* Altura da linha. Um valor < 1.2 pode ser bom para títulos grandes. */
+  margin: 0; /* Remove margens padrão da tag <h1>. */
+  letter-spacing: -0.5px; /* Ajuste fino no espaçamento entre letras. */
+  color: white; /* Garante que seja branco. */
+  /* Transição para o tamanho da fonte, para animar a mudança. */
   transition: font-size 0.3s ease-in-out;
 }
+/* Quando o header está ENCOLHIDO, o título fica menor. */
+.headerEncolhido .title {
+  font-size: 1.8rem;
+}
+/* Para o emoji de patinha dentro do título, se ele estiver em um <span>.
+     Tenta alinhar melhor o emoji com o texto. */
 .title span {
   vertical-align: middle;
 }
 
 .randomButton {
-  background-color: var(--color-secondary);
+  background-color: var(--color-secondary); /* Cor de fundo laranja. */
   color: white;
   font-family: var(--font-primary);
+  /* Padding e font-size para o estado TOTALMENTE EXPANDIDO.
+       Este botão só aparece quando o header está expandido (ou em desktop). */
   padding: 0.65rem 1.3rem;
-  border: none;
-  border-radius: var(--border-radius);
   font-size: 0.9rem;
-  font-weight: 700;
-  white-space: nowrap;
-  cursor: pointer;
+  border: none; /* Remove borda padrão. */
+  border-radius: var(--border-radius); /* Cantos arredondados. */
+  font-weight: 700; /* "Bold". */
+  white-space: nowrap; /* Impede que o texto do botão quebre em várias linhas. */
+  cursor: pointer; /* Cursor vira uma "mãozinha". */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil. */
+  /* Transições para efeitos de hover/focus. */
   transition: background-color 0.2s ease-out, transform 0.15s ease-out,
-    box-shadow 0.2s ease-out, opacity 0.3s ease-in-out;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow 0.2s ease-out;
+  /* A opacidade para sumir/aparecer é controlada pela renderização condicional no JSX,
+       então não precisamos de transição de opacidade aqui diretamente para isso. */
 }
+/* Efeitos ao passar o mouse (:hover) ou focar com o teclado (:focus-visible). */
 .randomButton:hover,
 .randomButton:focus-visible {
-  background-color: var(--color-secondary-darker);
-  transform: scale(1.03) translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  /* `:focus-visible` é ótimo para acessibilidade! */
+  background-color: var(--color-secondary-darker); /* Laranja mais escuro. */
+  transform: scale(1.03) translateY(-1px); /* Leve aumento e "subida". */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra mais forte. */
 }
+/* Estilo de foco específico para navegação por teclado. */
 .randomButton:focus-visible {
-  outline: 2px solid var(--color-primary-darker);
-  outline-offset: 2px;
+  outline: 2px solid var(--color-primary-darker); /* Contorno visual claro. */
+  outline-offset: 2px; /* Espaço entre o contorno e o botão. */
 }
+/* Efeito ao pressionar o botão (:active). */
 .randomButton:active {
-  transform: scale(0.98) translateY(0);
+  transform: scale(0.98) translateY(0); /* Efeito de "afundar". */
 }
 
+/* --- Campo de Busca --- */
 .searchContainer {
   width: 100%;
-  max-width: 640px;
+  max-width: 640px; /* Limita a largura do campo de busca. */
   margin-left: auto;
-  margin-right: auto;
+  margin-right: auto; /* Centraliza. */
+  /* Margem inferior no estado TOTALMENTE EXPANDIDO. */
   margin-bottom: 1rem;
-  padding-left: 0.5rem;
+  padding-left: 0.5rem; /* Pequeno padding lateral para telas muito estreitas. */
   padding-right: 0.5rem;
   box-sizing: border-box;
+  /* Transição para a margem, para suavizar se o conteúdo acima mudar de altura. */
   transition: margin-bottom 0.3s ease-in-out;
 }
+/* Margem inferior no estado ENCOLHIDO (quando o header tem menos padding). */
 .headerEncolhido .searchContainer {
   margin-bottom: 0.6rem;
 }
 
 .searchInput {
-  width: 100%;
+  width: 100%; /* Ocupa toda a largura do .searchContainer. */
+  /* Padding e font-size no estado TOTALMENTE EXPANDIDO. */
   padding: 0.8rem 1rem;
-  border-radius: var(--border-radius);
-  border: 2px solid var(--color-border-light, #ced4da);
-  color: var(--color-text-light);
   font-size: 1rem;
-  font-family: var(--font-secondary);
-  outline: none;
+  border-radius: var(--border-radius); /* Cantos arredondados. */
+  border: 2px solid var(--color-border-light, #ced4da); /* Borda cinza clara. */
+  color: var(--color-text-light); /* Cor do texto digitado. */
+  font-family: var(--font-secondary); /* Fonte secundária. */
+  outline: none; /* Remove o contorno padrão do navegador no foco. Vamos customizar! */
   box-sizing: border-box;
+  /* Transições para:
+       - `border-color` e `box-shadow` (para o efeito de foco).
+       - `padding` e `font-size` (para animar a mudança no estado encolhido). */
   transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out,
     padding 0.3s ease-in-out, font-size 0.3s ease-in-out;
 }
+/* Estilo para o texto de placeholder (dica dentro do input).
+     `::placeholder` é um pseudo-ELEMENTO (note os dois-pontos duplos). */
 .searchInput::placeholder {
-  color: var(--color-text-muted, #6c757d);
-  opacity: 0.9;
-  font-style: italic;
+  color: var(--color-text-muted, #6c757d); /* Cor cinza, menos destaque. */
+  opacity: 0.9; /* Levemente transparente. */
+  font-style: italic; /* Para diferenciar do texto real. */
 }
+/* Efeito de FOCO no campo de busca. */
 .searchInput:focus {
-  border-color: var(--color-secondary);
-  box-shadow: 0 0 0 3.5px rgba(239, 108, 0, 0.25);
+  border-color: var(--color-secondary); /* Borda fica laranja. */
+  /* "Glow" (brilho) sutil ao redor, usando box-shadow. Ótimo para acessibilidade. */
+  box-shadow: 0 0 0 3.5px rgba(239, 108, 0, 0.25); /* Laranja com transparência. */
 }
 
+/* Estilos para o input de busca quando o header está ENCOLHIDO. */
 .headerEncolhido .searchInput {
   padding-top: 0.55rem;
   padding-bottom: 0.55rem;
   padding-left: 0.8rem;
   padding-right: 0.8rem;
-  font-size: 0.9rem;
+  font-size: 0.9rem; /* Input e texto menores. */
 }
 
-/* --- CONTAINER DOS BOTÕES DE ORDENAÇÃO (.sortControls) --- */
+/* --- Botões de Ordenação --- */
 .sortControls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: flex; /* Flexbox para alinhar os botões de ordenação. */
+  flex-wrap: wrap; /* MUITO IMPORTANTE: Permite que os botões "quebrem" para a
+                            próxima linha se não couberem todos na largura da tela.
+                            Essencial para responsividade! */
+  justify-content: center; /* Centraliza os botões horizontalmente no container. */
+  /* Gap (espaçamento) entre os botões no estado TOTALMENTE EXPANDIDO.
+       '0.6rem 0.8rem' = 0.6rem vertical (entre linhas), 0.8rem horizontal (entre botões). */
   gap: 0.6rem 0.8rem;
-  padding: 0 0.5rem;
+  padding: 0 0.5rem; /* Padding lateral para não colar nas bordas em telas estreitas. */
+  /* Transição para o `gap`, para suavizar se ele mudar no estado encolhido. */
   transition: gap 0.3s ease-in-out;
 }
+/* Gap (espaçamento) entre os botões no estado ENCOLHIDO.
+     Como os botões ficam menores, o gap entre eles também pode diminuir. */
 .headerEncolhido .sortControls {
   gap: 0.4rem 0.5rem;
 }
 
-/* --- ESTILO DOS BOTÕES DE ORDENAÇÃO (.sortButton) --- */
 .sortButton {
-  background-color: var(--color-bg-light);
-  color: var(--color-primary-darker);
-  padding: 0.5rem 1rem; /* Padding padrão para telas maiores */
-  border-radius: var(--border-radius-small);
-  border: 1px solid var(--color-primary-darker);
-  font-size: 0.8rem;
-  font-weight: 600;
+  background-color: var(--color-bg-light); /* Fundo cinza claro. */
+  color: var(--color-primary-darker); /* Texto verde escuro. */
+  /* Padding e font-size para o estado TOTALMENTE EXPANDIDO,
+       quando o botão mostra o texto completo (ex: "Nome (A-Z)").
+       Estes valores são a base para telas maiores. */
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem; /* Tamanho da fonte do texto principal do botão (ex: "Nome"). */
+  border-radius: var(
+    --border-radius-small
+  ); /* Cantos levemente arredondados. */
+  border: 1px solid var(--color-primary-darker); /* Borda fina verde escura. */
+  font-weight: 600; /* "Semi-bold". */
   font-family: var(--font-secondary);
   cursor: pointer;
-  white-space: nowrap;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  white-space: nowrap; /* Impede que o texto do botão quebre em várias linhas. */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Sombra muito sutil. */
+
+  /* Para alinhar o texto e o ícone (se ambos estiverem visíveis) DENTRO do botão: */
+  display: inline-flex; /* Trata o botão como um container flex para seus filhos (os spans). */
+  align-items: center; /* Alinha verticalmente o texto e o ícone. */
+  justify-content: center; /* Centraliza horizontalmente o conteúdo do botão. */
+  /* Gap INTERNO do botão (entre o texto e o ícone, se ambos visíveis)
+       no estado TOTALMENTE EXPANDIDO. `em` é relativo ao font-size do botão. */
+  gap: 0.3em;
+
+  /* Transições para todas as propriedades que podem mudar com hover/focus ou no estado encolhido. */
   transition: background-color 0.2s ease-out, color 0.2s ease-out,
     transform 0.15s ease-out, box-shadow 0.2s ease-out, padding 0.3s ease-in-out,
-    font-size 0.3s ease-in-out;
-  /* Para alinhar o texto e o ícone verticalmente se estiverem lado a lado */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3em; /* Pequeno espaço entre o texto e o ícone, se ambos visíveis */
+    font-size 0.3s ease-in-out, gap 0.3s ease-in-out;
 }
 
-/* NOVO: Estilos para os spans dentro dos botões de ordenação */
+/* Estilos para os SPANS DENTRO dos botões de ordenação.
+     Estes controlam qual parte do texto/ícone é visível por padrão (desktop). */
 .sortButtonText {
-  /* Visível por padrão (desktop) */
-  display: inline;
+  /* Texto principal (ex: "Nome", "Risco"). Visível por padrão. */
+  display: inline; /* `inline` permite que fique na mesma linha de outros spans. */
 }
 .sortButtonTextDirection {
-  /* Visível por padrão (desktop), texto menor para a direção */
+  /* Texto da direção (ex: "(A-Z)", "(Menor)"). Visível por padrão. */
   display: inline;
-  font-size: 0.85em; /* Um pouco menor que o texto principal do botão */
-  margin-left: 0.2em; /* Pequeno espaço antes da direção */
-  opacity: 0.85;
+  font-size: 0.85em; /* Relativo ao font-size do .sortButton (0.8rem * 0.85). Fica um pouco menor. */
+  margin-left: 0.2em; /* Pequeno espaço à esquerda, separando do texto principal. */
+  opacity: 0.85; /* Levemente mais sutil que o texto principal. */
 }
 .sortButtonIcon {
-  /* Escondido por padrão (desktop) */
+  /* Ícone de seta (▲ ou ▼). ESCONDIDO por padrão (para desktop). */
   display: none;
-  font-size: 1em; /* Ajuste o tamanho do ícone de seta conforme necessário */
-  line-height: 1; /* Para melhor alinhamento vertical do caractere da seta */
+  font-size: 1em; /* Tamanho do ícone relativo ao font-size do botão. */
+  line-height: 1; /* Ajuda no alinhamento vertical de caracteres de texto como ícones. */
+  margin-left: 0.3em; /* Espaço se o texto principal também estiver visível. */
 }
 
-/* Efeitos ao passar o mouse ou focar no botão de ordenação. */
+/* Efeitos de :hover e :focus-visible para os botões de ordenação. */
 .sortButton:hover,
 .sortButton:focus-visible {
-  background-color: var(--color-primary-darker);
-  color: white;
-  border-color: var(--color-primary);
-  transform: translateY(-1px) scale(1.02);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-primary-darker); /* Fundo verde escuro. */
+  color: white; /* Texto branco. */
+  border-color: var(--color-primary); /* Borda verde principal. */
+  transform: translateY(-1px) scale(1.02); /* Leve "subida" e aumento. */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Sombra mais pronunciada. */
 }
 .sortButton:focus-visible {
-  outline: 2px solid var(--color-secondary);
+  /* Apenas para foco via teclado. */
+  outline: 2px solid var(--color-secondary); /* Contorno laranja para acessibilidade. */
   outline-offset: 2px;
 }
 .sortButton:active {
-  transform: translateY(0) scale(0.98);
-  background-color: var(--color-primary);
+  /* Quando o botão está sendo clicado. */
+  transform: translateY(0) scale(0.98); /* Leve "afundada". */
+  background-color: var(
+    --color-primary
+  ); /* Pode mudar a cor de fundo ao clicar. */
 }
 
-/* Diminuir os botões de ordenação quando o header encolhe */
+/* Estilos para os botões de ordenação quando o header está ENCOLHIDO.
+     Estes são os valores base para o estado encolhido. As media queries abaixo
+     vão refinar isso para mobile vs. desktop no estado encolhido. */
 .headerEncolhido .sortButton {
-  padding: 0.35rem 0.7rem;
-  font-size: 0.7rem;
-}
-/* Se os botões encolhidos também estiverem em modo ícone, o padding pode ser ainda menor */
-.headerEncolhido .sortButtonIconOnly {
-  /* Classe a ser adicionada via JS ou CSS dependendo da tela E encolhimento */
-  padding: 0.4rem 0.5rem; /* Mais compacto para apenas ícone */
+  padding: 0.35rem 0.7rem; /* Padding base para botões encolhidos. */
+  font-size: 0.7rem; /* Tamanho de fonte base para botões encolhidos. */
+  /* O `gap` interno herdará do `.headerEncolhido .sortControls` ou do `.sortButton` base
+       e pode ser ajustado nas media queries se necessário para o conteúdo interno. */
 }
 
-/* --- MEDIA QUERIES (AJUSTES PARA TELAS MAIORES E MENORES) --- */
+/* --- MEDIA QUERIES (A MÁGICA DA RESPONSIVIDADE!) --- */
+/* Media queries permitem aplicar estilos diferentes com base nas características
+     da tela do usuário, como a largura. Usamos "Mobile First": os estilos fora
+     das media queries são para telas pequenas (mobile), e depois adicionamos/sobrescrevemos
+     para telas maiores. */
 
-/* Breakpoint para telas pequenas (ex: smartphones) - onde queremos apenas ícones */
+/* Breakpoint para TELAS PEQUENAS (ex: smartphones)
+     Aplica estes estilos se a largura da tela for NO MÁXIMO 767 pixels. */
 @media (max-width: 767px) {
-  /* Ajuste este breakpoint conforme necessário. 767px é comum antes de tablets. */
-  .sortButtonText,
+  /* Para os botões de ordenação em telas pequenas: */
+
+  /* 1. Escondemos o texto de direção (ex: "(A-Z)", "(Menor)") para economizar espaço. */
   .sortButtonTextDirection {
-    display: none; /* Esconde os textos */
+    display: none;
+  }
+
+  /* 2. Mostramos o texto principal (ex: "Nome") E o ícone de seta. */
+  .sortButtonText {
+    display: inline; /* Garante que o texto principal seja visível. */
+    margin-right: 0.2em; /* Pequeno espaço entre o texto principal e o ícone. */
   }
   .sortButtonIcon {
-    display: inline; /* Mostra os ícones de seta */
-    margin: 0; /* Remove margens laterais se houver, para centralizar melhor o ícone */
+    display: inline; /* Torna o ícone de seta visível. */
+    margin-left: 0; /* Remove a margem esquerda padrão, pois o .sortButtonText já tem margin-right. */
+    font-size: 0.9em; /* Tamanho do ícone pode ser ajustado em relação ao texto do botão. */
   }
+
+  /* 3. Ajustamos o tamanho geral dos botões para telas pequenas (quando o header está EXPANDIDO). */
   .sortButton {
-    padding: 0.4rem 0.6rem; /* Padding menor para botões só com ícone */
-    min-width: 36px; /* Largura mínima para um bom alvo de toque */
-    gap: 0; /* Remove o gap se só o ícone estiver visível */
+    /* `font-size` aqui se aplica ao `.sortButtonText` e influencia o `.sortButtonIcon` (que usa `em`). */
+    font-size: 0.75rem; /* "Nome", "Risco" ficam um pouco menores. */
+    padding: 0.4rem 0.6rem; /* Padding mais "justo" para acomodar texto + ícone. */
+    gap: 0.2em; /* Espaço menor entre o texto principal e o ícone. */
   }
 
-  /* Quando o header está encolhido E em tela pequena, os ícones podem ser ainda menores */
+  /* 4. Quando o header está ENCOLHIDO E a tela é PEQUENA:
+       Os botões ficam ainda menores. */
   .headerEncolhido .sortButton {
-    font-size: 0.7rem; /* Mantém o tamanho da fonte do ícone do estado encolhido geral */
-    padding: 0.3rem 0.5rem; /* Padding ainda menor */
-    min-width: 32px;
+    font-size: 0.65rem; /* Texto e ícone bem pequenos. CUIDADO com a legibilidade! */
+    padding: 0.3rem 0.5rem; /* Padding super compacto. */
+    gap: 0.15em; /* Espaço mínimo entre texto e ícone. */
   }
-}
+  /* E o espaço entre os próprios botões de ordenação também diminui. */
+  .headerEncolhido .sortControls {
+    gap: 0.3rem 0.4rem;
+  }
+} /* Fim da media query para telas pequenas (max-width: 767px) */
 
-/* Media Queries para telas maiores (a partir de 640px, sm) */
+/* Breakpoint para TELAS MAIORES (a partir de 'sm' - small, 640px)
+     Aplica estes estilos se a largura da tela for NO MÍNIMO 640 pixels.
+     Estes estilos SOBRESCREVEM os estilos base E os da media query `max-width: 767px`
+     quando esta condição de `min-width` é atendida. */
 @media (min-width: 640px) {
+  /* Ajustes gerais no layout do header para telas maiores. */
   .header {
-    padding-left: 2rem;
+    padding-left: 2rem; /* Mais padding lateral. */
     padding-right: 2rem;
   }
   .headerContentWrapper {
+    /* Logo/título e botão surpresa ficam lado a lado. */
     flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
+    justify-content: space-between; /* Empurra o logo/título para um lado e o botão para o outro. */
+    align-items: center; /* Alinha verticalmente. */
+    margin-bottom: 1.5rem; /* Mais espaço abaixo. */
   }
 
+  /* Estilos para o ESTADO ENCOLHIDO em telas MAIORES (sm+).
+       Lembre-se: o header SÓ encolhe em mobile. Estes estilos `.headerEncolhido`
+       DENTRO desta media query NÃO terão efeito prático enquanto a lógica no JS
+       impedir o encolhimento em telas > 767px.
+       ELES SÃO MANTIDOS AQUI CASO A LÓGICA DO JS MUDE NO FUTURO, OU PARA DEMONSTRAR
+       COMO SERIA SE O ENCOLHIMENTO FOSSE PERMITIDO EM TELAS MAIORES.
+       Se o header NUNCA encolher em desktop, estas regras `.headerEncolhido` podem ser removidas
+       de dentro das media queries `min-width` para simplificar. Por ora, deixo para fins didáticos. */
   .headerEncolhido .logo {
     height: 40px;
   }
@@ -300,21 +518,31 @@
     font-size: 0.95rem;
   }
   .headerEncolhido .sortButton {
-    padding: 0.4rem 0.8rem; /* Padding para botões de texto no estado encolhido sm+ */
+    /* Botões com TEXTO COMPLETO, mas um pouco menores. */
     font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
   }
-  /* Garante que em telas sm+, o texto do botão de ordenação seja visível (sobrescreve o max-width: 767px) */
-  .sortButtonText,
+  .headerEncolhido .sortControls {
+    gap: 0.5rem 0.6rem;
+  }
+
+  /* RESTAURAÇÃO DOS ESTILOS PARA TEXTO COMPLETO nos botões de ordenação em telas maiores.
+       Isto é crucial para DESFAZER as mudanças da media query `max-width: 767px`. */
+  .sortButtonText {
+    display: inline; /* Garante que o texto principal volte a aparecer. */
+    margin-right: 0; /* Remove a margem que foi adicionada para o modo ícone+texto. */
+  }
   .sortButtonTextDirection {
-    display: inline;
+    display: inline; /* Garante que o texto de direção (A-Z, Menor) volte a aparecer. */
   }
   .sortButtonIcon {
-    display: none; /* Ícone escondido em telas maiores por padrão */
+    display: none; /* Esconde o ícone de seta por padrão em telas maiores. */
+    /* DICA: Se você quisesse o ícone AO LADO do texto completo em telas maiores,
+         poderia mudar para `display: inline;` aqui e ajustar o `gap` no `.sortButton`. */
   }
-  /* Se você quiser que o ícone apareça ao lado do texto em telas maiores, mude para 'inline' aqui: */
-  /* .sortButtonIcon { display: inline; } */
 
-  /* Estado NÃO encolhido em telas sm+ */
+  /* Estilos para o estado NÃO ENCOLHIDO (EXPANDIDO) em telas MAIORES (sm+).
+       Estes são os tamanhos "normais" para desktop. */
   .logo {
     height: 50px;
   }
@@ -327,26 +555,37 @@
   }
   .searchInput {
     font-size: 1.05rem;
+    padding: 0.8rem 1rem; /* Garante o padding normal do input. */
   }
   .sortButton {
-    /* Estilo base para botões com texto em sm+ */
-    font-size: 0.875rem;
-    padding: 0.6rem 1.1rem;
+    /* Estilo base para botões com texto completo em sm+ */
+    font-size: 0.875rem; /* Tamanho de fonte normal para texto completo. */
+    padding: 0.6rem 1.1rem; /* Padding normal para texto completo. */
+    gap: 0.3em; /* Gap interno normal entre texto e direção. */
   }
+  .sortControls {
+    gap: 0.6rem 0.8rem; /* Gap normal entre os botões. */
+  }
+  /* Remove padding lateral extra dos containers de busca e ordenação,
+       pois o .header já tem mais padding em telas maiores. */
   .searchContainer,
   .sortControls {
     padding-left: 0;
     padding-right: 0;
   }
-}
+} /* Fim da media query para min-width: 640px */
 
-/* Media Query para telas ainda maiores (lg) */
+/* Breakpoint para TELAS AINDA MAIORES (lg+ , large, a partir de 1024px) */
 @media (min-width: 1024px) {
+  /* Ajustes no padding geral do header. */
   .header {
     padding-top: 1.25rem;
     padding-bottom: 1.25rem;
   }
 
+  /* Estilos para o ESTADO ENCOLHIDO em telas AINDA MAIORES (lg+).
+       Mesma observação da media query anterior: só teriam efeito se o JS permitisse
+       encolher em desktop. Deixo para fins didáticos. */
   .headerEncolhido .logo {
     height: 45px;
   }
@@ -359,37 +598,71 @@
     font-size: 1rem;
   }
   .headerEncolhido .sortButton {
-    padding: 0.45rem 0.9rem; /* Padding para botões de texto no estado encolhido lg+ */
+    /* Botões com texto completo, mas um pouco menores. */
     font-size: 0.8rem;
+    padding: 0.45rem 0.9rem;
   }
 
-  /* Estado NÃO encolhido em telas lg+ */
+  /* Estilos para o estado NÃO ENCOLHIDO (EXPANDIDO) em telas AINDA MAIORES (lg+). */
   .title {
     font-size: 2.75rem;
-    letter-spacing: -1px;
+    letter-spacing: -1px; /* Em títulos muito grandes, um leve espaçamento negativo
+                               pode melhorar a legibilidade. */
   }
   .logo {
     height: 55px;
   }
   .searchContainer {
     max-width: 720px;
-  }
+  } /* Campo de busca pode ser um pouco mais largo. */
   .sortControls {
     gap: 0.7rem 1rem;
-  }
-}
+  } /* Mais espaço entre os botões. */
+
+  /* Os `.sortButton` e `.searchInput` herdam seus tamanhos "normais" da media query
+       de `min-width: 640px`, a menos que você queira que sejam AINDA MAIORES aqui
+       e defina valores específicos. */
+} /* Fim da media query para min-width: 1024px */
 
 /* ===================================================================================
-   NOTAS FINAIS PARA OS ALUNOS (Com foco nas novas alterações):
-   - Spans para Conteúdo Dinâmico: Usamos spans (`.sortButtonText`, `.sortButtonTextDirection`, `.sortButtonIcon`)
-     para separar o conteúdo de texto dos ícones.
-   - Media Queries para Responsividade de Conteúdo:
-     - Em telas menores (`max-width: 767px`), escondemos os spans de texto e mostramos o span do ícone.
-     - Em telas maiores (`min-width: 640px`), garantimos que os spans de texto sejam visíveis novamente,
-       e os de ícone sejam escondidos (a menos que você queira ambos).
-   - Ajuste de Padding e Tamanho: O padding dos botões é ajustado nas media queries para
-     acomodar melhor apenas o ícone ou o texto completo.
-   - `aria-hidden="true"` no JSX para os ícones: Ajuda leitores de tela a não anunciarem
-     caracteres de seta, já que o botão tem um `aria-label` descritivo.
-   - `title` no JSX para os botões: Fornece uma dica visual em desktops quando apenas o ícone é visível.
-   =================================================================================== */
+     NOTAS FINAIS SUPER IMPORTANTES PARA OS ALUNOS:
+  
+     - "Mobile First" na Prática:
+       Perceba como definimos os estilos base (fora das media queries) pensando em como
+       o header deve se parecer em uma tela pequena. Depois, usamos `@media (min-width: ...)`
+       para ADICIONAR ou MODIFICAR esses estilos para telas maiores. É como construir
+       uma casa começando pelo alicerce e depois adicionando os andares.
+  
+     - A Cascata e Especificidade do CSS:
+       O navegador lê o CSS de cima para baixo. Se duas regras tentam estilizar a mesma
+       propriedade do mesmo elemento, a ÚLTIMA regra lida geralmente vence, OU a regra
+       MAIS ESPECÍFICA. Media queries também entram nessa "briga" de prioridade.
+       Entender isso é chave para depurar CSS!
+       Ex: Os estilos em `@media (min-width: 640px)` vão sobrescrever os estilos base
+       OU os de `@media (max-width: 767px)` se a tela for maior que 640px.
+  
+     - `rem` vs. `em` vs. `px`:
+       - `px` (pixels): Uma unidade fixa. Bom para coisas que não devem mudar de tamanho,
+         como bordas finas.
+       - `em`: Relativo ao `font-size` do ELEMENTO PAI (ou do próprio elemento, para `font-size`).
+         Usamos para `font-size` em `.sortButtonTextDirection` e `.sortButtonIcon` para que
+         eles escalem em relação ao `font-size` do `.sortButton`.
+       - `rem` ("root em"): Relativo ao `font-size` do elemento RAIZ do HTML (geralmente 16px).
+         Ótimo para paddings, margins, e font-sizes gerais, pois permite que o usuário
+         ajuste o tamanho da fonte no navegador e todo o layout escale proporcionalmente
+         (bom para acessibilidade).
+  
+     - A Beleza das Transições (`transition`):
+       Elas fazem as mudanças de estado (como o header encolhendo, ou um botão mudando
+       de cor no `:hover`) parecerem profissionais e suaves, em vez de "duras" e instantâneas.
+       Lembre-se: a transição deve ser definida no estado BASE do elemento para que
+       funcione ao ENTRAR e SAIR do estado modificado.
+  
+     - Testar, Testar e Inspecionar!
+       Use as Ferramentas de Desenvolvedor do seu navegador (geralmente F12)!
+       - Aba "Elements" (ou "Inspetor"): Veja o HTML e o CSS aplicado a cada elemento.
+         Você pode até editar o CSS ao vivo para testar coisas!
+       - Modo Responsivo: Simule diferentes tamanhos de tela de celular e tablet.
+       Brinque com os valores, comente linhas de CSS para ver o que acontece.
+       É a melhor forma de aprender!
+     =================================================================================== */

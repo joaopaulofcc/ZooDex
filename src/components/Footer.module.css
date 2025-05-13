@@ -16,6 +16,15 @@
    Podemos (e devemos) usar as variáveis CSS que definimos no arquivo global
    'src/index.css' (dentro do seletor :root). Por exemplo, para cores, fontes,
    espaçamentos, etc., usamos `var(--nome-da-variavel)`.
+
+   NOVAS ALTERAÇÕES (Otimização para Mobile):
+    - Adicionada uma media query para telas pequenas (max-width: 767px).
+    - Dentro desta media query, reduzimos:
+        - O padding geral do rodapé (`.footer`).
+        - O tamanho da fonte do texto principal do rodapé (`.footer`).
+        - O tamanho da fonte e o espaçamento da seção de disclaimer (`.disclaimer`).
+    - O objetivo é tornar o rodapé mais compacto e menos intrusivo em
+      dispositivos móveis, onde o espaço vertical é mais limitado.
    =================================================================================== */
 
 /* --- ESTILO PARA O CONTAINER PRINCIPAL DO RODAPÉ (.footer) --- */
@@ -23,141 +32,206 @@
 .footer {
   /* Alinhamento do Texto: */
   text-align: center; /* Centraliza todo o conteúdo de texto dentro do rodapé.
-                          Afeta os elementos <p> filhos. */
+                         Afeta os elementos <p> filhos. */
 
   /* Espaçamento Interno (Padding):
-      'padding' define o espaço entre o conteúdo do elemento e suas bordas.
-      - `1.5rem 1rem`: Forma abreviada para `padding-top: 1.5rem; padding-right: 1rem; padding-bottom: 1.5rem; padding-left: 1rem;`.
-                       (topo/base | laterais)
-      - 'rem' (Root EM): É uma unidade de medida relativa ao tamanho da fonte do elemento raiz
-                         do documento (a tag <html>). Se a fonte raiz for 16px (padrão comum),
-                         então 1rem = 16px, 1.5rem = 24px. Usar 'rem' para padding e margin
-                         ajuda na escalabilidade e acessibilidade, pois os espaçamentos
-                         se ajustam se o usuário aumentar o tamanho da fonte base do navegador. */
+     Define o espaço entre o conteúdo do elemento e suas bordas.
+     '1.5rem 1rem' = 1.5rem (24px) no topo/base, 1rem (16px) nas laterais.
+     Este é o padding para telas MAIORES (desktop). */
   padding: 1.5rem 1rem;
 
   /* Cores: */
-  background-color: #333333; /* Cor de fundo escura para o rodapé.
-                                  NOTA: Para consistência, idealmente usaríamos uma variável CSS global
-                                  se esta cor fosse usada em outros lugares, ex: `var(--color-dark-background);`.
-                                  Como no original estava o valor direto, mantive para referência, mas
-                                  explique aos alunos a vantagem de usar `var()`. */
-  color: #f0f0f0; /* Cor clara para o texto do rodapé, para garantir bom contraste
-                                  com o fundo escuro. Poderia ser `var(--color-text-on-dark);`. */
+  background-color: #333333; /* Cor de fundo escura.
+                                 ALUNOS: Idealmente, use uma variável CSS global aqui,
+                                 como `var(--color-footer-background, #333);`
+                                 para facilitar a manutenção do tema do site. */
+  color: #f0f0f0; /* Cor clara para o texto, para bom contraste.
+                     ALUNOS: Similarmente, `var(--color-footer-text, #f0f0f0);` seria melhor. */
 
   /* Posicionamento e Layout (para o "Sticky Footer"):
-      'margin-top: auto;' é uma técnica comum usada em conjunto com Flexbox no container pai
-      (neste caso, o `<div id="root">` que foi configurado com `display: flex; flex-direction: column;`
-      em `src/index.css`).
-      Se o conteúdo principal da página for curto e não preencher toda a altura da tela,
-      'margin-top: auto;' no rodapé fará com que a margem superior do rodapé se expanda
-      para preencher todo o espaço vertical restante, efetivamente "empurrando" o rodapé
-      para a base da janela do navegador. Isso cria o efeito de "sticky footer" sem
-      precisar de posicionamento fixo ou absoluto que poderia cobrir conteúdo. */
+     `margin-top: auto;` é uma técnica poderosa quando o elemento pai direto do footer
+     (geralmente o container principal da aplicação, como o `<div id="root">` ou um `<main>`)
+     é configurado como um container flex com `display: flex; flex-direction: column;`
+     e tem `min-height: 100vh;`.
+     Isso faz com que o rodapé seja "empurrado" para a parte inferior da viewport
+     se o conteúdo da página for mais curto que a altura da tela. */
   margin-top: auto;
 
   /* Tipografia: */
   font-family: var(
     --font-secondary,
-    "Open Sans",
-    sans-serif
-  ); /* Define a família de fontes para o rodapé.
-                                                                   Usa a variável global --font-secondary
-                                                                   com fallbacks se ela não estiver definida. */
-  font-size: 0.875rem; /* (14px se 1rem = 16px) Tamanho da fonte um pouco menor que o texto principal
-                           da página, comum para informações de rodapé. */
-  line-height: 1.6; /* Altura da linha para o texto do rodapé. Um valor entre 1.4 e 1.8
-                           geralmente melhora a legibilidade. (1.6 * 0.875rem). */
+    /* Tenta usar a fonte secundária definida globalmente. */ "Open Sans",
+    /* Se não definida, usa "Open Sans" como primeira alternativa. */ sans-serif
+      /* Se nenhuma das anteriores estiver disponível, usa uma fonte sans-serif genérica do sistema. */
+  );
+  /* Tamanho da fonte para telas MAIORES (desktop). */
+  font-size: 0.875rem; /* (14px se 1rem = 16px). Um pouco menor que o texto principal da página. */
+  line-height: 1.6; /* Altura da linha para boa legibilidade. (1.6 * 0.875rem). */
+  /* Transições para suavizar mudanças de padding e font-size se houver
+     alguma interação ou mudança de estado futura (não usado atualmente, mas bom ter). */
+  transition: padding 0.3s ease-in-out, font-size 0.3s ease-in-out;
 }
 
 /* --- ESTILO PARA OS ELEMENTOS DE PARÁGRAFO (<p>) DENTRO DO RODAPÉ --- */
-/* Esta regra CSS se aplica a TODAS as tags <p> que são descendentes
-    de um elemento com a classe '.footer' (ou, mais precisamente,
-    o nome de classe único gerado, como '.Footer_footer__XYZ123 p'). */
+/* Aplica-se a TODAS as tags <p> que são filhas diretas ou indiretas (descendentes)
+   de um elemento com a classe '.footer'. */
 .footer p {
-  /* Margens Verticais:
-      Adiciona um pequeno espaço vertical entre os parágrafos no rodapé.
-      Não queremos que fiquem colados uns nos outros. */
-  margin-top: 0.5rem; /* 0.5rem (8px) de espaço ACIMA de cada parágrafo. */
-  margin-bottom: 0.5rem; /* 0.5rem (8px) de espaço ABAIXO de cada parágrafo. */
-  /* A forma abreviada `margin: 0.5rem 0;` faria o mesmo
-      (0.5rem para topo/base, 0 para esquerda/direita). */
-
-  /* Opcional: Limitar a largura máxima dos parágrafos para melhor leitura,
-      especialmente se o rodapé for muito largo em telas grandes.
-   max-width: 60ch; /* 'ch' é uma unidade relativa à largura do caractere "0" (zero) da fonte atual.
-                      Limitar a largura de linhas de texto a cerca de 45-75 caracteres
-                      (aproximadamente 40-60ch) é bom para legibilidade. */
-  /* margin-left: auto; (Se usar max-width, precisa centralizar se text-align:center no pai não for suficiente) */
-  /* margin-right: auto; */
+  /* Margens Verticais: Espaço ACIMA e ABAIXO de cada parágrafo.
+     '0.5rem 0' significa:
+       - 0.5rem (8px) de margem no TOPO e na BASE.
+       - 0 de margem nas LATERAIS (esquerda e direita). */
+  margin: 0.5rem 0;
+  /* Transição para suavizar mudanças de margem ou tamanho de fonte se houver. */
+  transition: margin 0.3s ease-in-out, font-size 0.3s ease-in-out;
 }
 
 /* --- ESTILO PARA A SEÇÃO DE "DISCLAIMER" (AVISOS/ATRIBUIÇÕES) (.disclaimer) --- */
-/* Esta classe será aplicada à `div` que agrupa os parágrafos do disclaimer no Footer.jsx. */
+/* Aplicada à `div` que agrupa os parágrafos do disclaimer. */
 .disclaimer {
-  margin-top: 1.25rem; /* (20px) Espaçamento maior acima da seção de disclaimer
-                          para separá-la visualmente do conteúdo principal do rodapé. */
-  padding-top: 1rem; /* (16px) Espaçamento interno no topo, DENTRO da borda que vamos adicionar abaixo. */
+  /* Margem superior para separar visualmente o disclaimer do resto do rodapé.
+     Valor para telas MAIORES. */
+  margin-top: 1.25rem; /* (20px) */
+  /* Padding interno no topo, DENTRO da borda que vamos adicionar. */
+  padding-top: 1rem; /* (16px) */
 
-  /* Borda Superior:
-      Adiciona uma linha decorativa no topo desta seção para criar uma separação visual clara.
-      - `1px`: A espessura da linha da borda.
-      - `dashed`: O estilo da linha (tracejada). Outras opções comuns: 'solid' (sólida), 'dotted' (pontilhada).
-      - `#cccccc`: A cor da linha (um cinza claro). Poderia ser `var(--color-border-light)`. */
-  border-top: 1px dashed #cccccc;
+  /* Borda Superior: Uma linha decorativa para separação. */
+  border-top: 1px dashed #cccccc; /* 1px de espessura, tracejada, cor cinza claro.
+                                     ALUNOS: `var(--color-border-subtle, #ccc);` */
 
-  /* Tipografia específica para o disclaimer:
-      Geralmente, textos de disclaimer ou informações legais são um pouco menores e mais discretos. */
-  font-size: 0.75rem; /* (12px se 1rem = 16px, ou 0.75 * 0.875rem se baseado no .footer)
-                          Tamanho da fonte menor para o texto do disclaimer. */
-  color: #e0e0e0; /* Cor do texto um pouco mais clara que o texto principal do rodapé (#f0f0f0),
-                          para dar uma diferenciação sutil, mas ainda legível no fundo escuro.
-                          Certifique-se de que o contraste ainda seja bom para acessibilidade! */
-  line-height: 1.5; /* Altura da linha para o texto do disclaimer. */
+  /* Tipografia específica para o disclaimer (geralmente menor e mais discreta).
+     Valores para telas MAIORES. */
+  font-size: 0.75rem; /* (12px). Menor que o texto principal do rodapé. */
+  color: #e0e0e0; /* Cor um pouco mais clara/sutil que o texto principal do rodapé,
+                     mas ainda legível no fundo escuro.
+                     ALUNOS: `var(--color-footer-disclaimer-text, #e0e0e0);` */
+  line-height: 1.5;
+  /* Transições para suavizar mudanças. */
+  transition: margin-top 0.3s ease-in-out, padding-top 0.3s ease-in-out,
+    font-size 0.3s ease-in-out;
 }
 
 /* --- ESTILO PARA OS PARÁGRAFOS (<p>) ESPECIFICAMENTE DENTRO DA SEÇÃO DE DISCLAIMER --- */
-/* Esta regra é mais específica: aplica-se a tags <p> que são descendentes
-    de um elemento com a classe '.disclaimer' (que por sua vez está dentro de '.footer'). */
+/* Regra mais específica: <p> dentro de .disclaimer (que está dentro de .footer). */
 .disclaimer p {
-  /* Margens Verticais Menores para os parágrafos do disclaimer:
-      Para que as linhas de texto dentro do disclaimer fiquem um pouco mais próximas
-      umas das outras do que os parágrafos principais do rodapé. */
-  margin-top: 0.3rem; /* (aprox. 5px) */
+  /* Margens Verticais Menores para os parágrafos do disclaimer,
+     para que fiquem um pouco mais próximos. */
+  margin-top: 0.3rem;
   margin-bottom: 0.3rem;
+  /* Transição para suavizar mudanças de margem ou tamanho de fonte. */
+  transition: margin 0.3s ease-in-out, font-size 0.3s ease-in-out;
 }
 
 /* ===================================================================================
-    PONTOS IMPORTANTES DE CSS PARA OS ALUNOS REVISAREM NESTE ARQUIVO:
- 
-    - CSS Modules: Como eles ajudam a evitar conflitos de estilo.
-    - Variáveis CSS (Custom Properties): Como usar `var(--nome-da-variavel)`
-      para cores, fontes, espaçamentos, etc., definidas em `src/index.css`.
-    - Unidades de Medida CSS:
-      - `px` (pixels): Unidade absoluta, tamanho fixo.
-      - `rem` (root em): Relativa ao tamanho da fonte do elemento `<html>`. Ótima para
-                        escalabilidade geral e acessibilidade (se o usuário mudar o
-                        tamanho da fonte base do navegador, os `rem` se ajustam).
-      - `em`: Relativa ao tamanho da fonte do elemento PAI (ou do próprio elemento,
-              se `font-size` estiver definido nele). Útil para elementos que devem
-              escalar em proporção ao seu contexto de texto imediato.
-      - `%` (porcentagem): Relativa a alguma propriedade do elemento pai (ex: `width: 50%`
-                        significa 50% da largura do container pai).
-    - Box Model em CSS:
-      Lembre-se que todo elemento HTML é tratado como uma "caixa". O Box Model descreve
-      como `padding` (espaçamento interno), `border` (borda) e `margin` (espaçamento externo)
-      interagem com as dimensões do conteúdo do elemento.
-      A propriedade `box-sizing: border-box;` (que pode ser definida globalmente em `index.css`)
-      muda o cálculo para que `padding` e `border` sejam INCLUÍDOS na largura/altura
-      total do elemento, o que muitos desenvolvedores acham mais intuitivo.
-    - Propriedades de Layout (Flexbox):
-      O `margin-top: auto;` no `.footer` funciona em conjunto com `display: flex;`
-      e `flex-direction: column;` no elemento pai (`#root`) para criar o efeito
-      de "sticky footer".
-    - Tipografia:
-      Propriedades como `font-family`, `font-size`, `font-weight`, `line-height`, `text-align`
-      são fundamentais para controlar a aparência do texto.
-    - Semântica HTML e CSS:
-      Usar a tag `<footer>` no JSX é semanticamente correto. O CSS deve complementar
-      essa estrutura, tornando-a visualmente clara e agradável.
-    =================================================================================== */
+   OTIMIZAÇÕES PARA DISPOSITIVOS MÓVEIS (TELAS PEQUENAS)
+   Usamos uma "Media Query" para aplicar estilos diferentes quando a tela do usuário
+   atende a certas condições (neste caso, largura máxima de 767 pixels).
+   Esta é a essência do Design Responsivo!
+   =================================================================================== */
+@media (max-width: 767px) {
+  /* Quando a largura da tela for 767 pixels OU MENOS,
+     os seguintes estilos serão APLICADOS ou SOBRESCREVERÃO os estilos base. */
+
+  /* Para o container principal do rodapé em telas pequenas: */
+  .footer {
+    /* Reduzimos o padding geral para economizar espaço vertical. */
+    padding-top: 1rem; /* De 1.5rem para 1rem */
+    padding-bottom: 1rem; /* De 1.5rem para 1rem */
+    /* O padding lateral (1rem) pode ser mantido ou também reduzido se necessário.
+       Ex: padding: 1rem 0.75rem; */
+
+    /* Reduzimos o tamanho da fonte principal do rodapé. */
+    font-size: 0.8rem; /* De 0.875rem para 0.8rem (aprox. 13px vs 14px).
+                          Uma pequena redução pode fazer diferença no mobile. */
+    line-height: 1.5; /* Ajustamos a altura da linha para a nova font-size. */
+  }
+
+  /* Para os parágrafos DENTRO do rodapé em telas pequenas: */
+  .footer p {
+    /* Podemos reduzir um pouco as margens entre os parágrafos se necessário. */
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+  }
+
+  /* Para a seção de disclaimer em telas pequenas: */
+  .disclaimer {
+    /* Reduzimos o espaço acima do disclaimer. */
+    margin-top: 1rem; /* De 1.25rem para 1rem */
+    /* E o padding interno no topo. */
+    padding-top: 0.75rem; /* De 1rem para 0.75rem */
+
+    /* Reduzimos o tamanho da fonte do texto do disclaimer. */
+    font-size: 0.7rem; /* De 0.75rem para 0.7rem (aprox. 11px vs 12px).
+                          CUIDADO: Textos muito pequenos podem ser difíceis de ler!
+                          Teste em dispositivos reais para garantir a legibilidade. */
+    line-height: 1.4; /* Ajustamos a altura da linha. */
+  }
+
+  /* Para os parágrafos DENTRO do disclaimer em telas pequenas: */
+  .disclaimer p {
+    /* Margens ainda menores entre os parágrafos do disclaimer. */
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  /* ALUNOS: PONTO DE DISCUSSÃO!
+     Poderíamos ser ainda mais agressivos aqui? Por exemplo:
+     - Mudar o `text-align` para `left` em vez de `center` se acharmos que
+       ocupa menos espaço ou melhora a leitura em colunas estreitas.
+     - Esconder completamente a seção `.disclaimer` em telas MUITO pequenas
+       (ex: `@media (max-width: 480px)`) se ela não for absolutamente crítica,
+       usando `display: none;`. (Mas cuidado para não esconder informações importantes!)
+     - Mudar o estilo da borda do `.disclaimer` para algo mais sutil ou removê-la.
+
+     A chave é testar em dispositivos reais e ver o que proporciona a melhor
+     experiência do usuário (UX) e legibilidade. */
+} /* Fim da media query para (max-width: 767px) */
+
+/* ===================================================================================
+   PONTOS IMPORTANTES DE CSS PARA OS ALUNOS REVISAREM NESTE ARQUIVO:
+   (Reiterando e adicionando aos comentários do Footer.jsx, focando no CSS)
+
+   - CSS Modules e Escopo Local: Lembre-se que `styles.footer` no JSX se refere
+     a uma classe como `.footer` neste arquivo, mas o nome da classe no HTML final
+     será algo único como `Footer_footer__Hash123`. Isso evita colisões de nomes!
+
+   - Variáveis CSS (`var(--nome-da-variavel)`):
+     FUNDAMENTAL para um design consistente e fácil de manter. Se você definir
+     `--color-text-light: #f0f0f0;` no seu `:root` (em `index.css`), você pode
+     usar `color: var(--color-text-light);` em muitos lugares. Se precisar mudar
+     essa cor clara, muda só na variável, e todos os lugares atualizam!
+
+   - Unidades Relativas (`rem`, `em`) vs. Absolutas (`px`):
+     - `rem` (root em) é ótimo para acessibilidade. Se o usuário aumenta o tamanho
+       da fonte padrão do navegador, os elementos dimensionados com `rem` escalam
+       proporcionalmente. Use para `font-size`, `padding`, `margin`, `width`, `height`
+       sempre que possível.
+     - `em` é relativo ao `font-size` do elemento pai (ou do próprio elemento para `font-size`).
+       Bom para coisas que devem escalar com o texto ao redor (ex: ícones baseados em fonte).
+     - `px` (pixels) é fixo. Use para coisas que NÃO devem escalar, como uma borda de 1px.
+
+   - "Mobile First" e Media Queries:
+     Os estilos que você escreve FORA de qualquer `@media` query são seus estilos BASE.
+     Pela filosofia "Mobile First", esses estilos base devem ser para telas PEQUENAS.
+     Depois, você usa `@media (min-width: XXXpx)` para adicionar ou sobrescrever estilos
+     para telas MAIORES.
+     No nosso caso, como estamos ADICIONANDO otimizações para mobile e os estilos base
+     já funcionavam para desktop, usamos `@media (max-width: 767px)` para aplicar
+     mudanças ESPECÍFICAS para telas menores que esse breakpoint, sobrescrevendo
+     os estilos base apenas nessas condições. Ambas as abordagens (`min-width` ou `max-width`)
+     são válidas dependendo da sua estratégia inicial.
+
+   - Transições (`transition`):
+     Adicionar transições às propriedades que mudam entre os estados (embora neste
+     footer não haja mudança de estado dinâmica como no header) é uma boa prática se
+     você antecipar futuras interações ou apenas para manter a consistência.
+     Elas suavizam qualquer mudança visual.
+
+   - Acessibilidade (A11y):
+     - Contraste de Cores: Certifique-se de que o texto tenha contraste suficiente
+       com a cor de fundo para ser legível por pessoas com baixa visão.
+       Existem ferramentas online para verificar o contraste (WCAG contrast checker).
+     - Tamanho da Fonte: Evite fontes excessivamente pequenas, especialmente em mobile.
+       O texto do disclaimer (0.7rem ~ 11px) está no limite do aceitável.
+
+   Continue testando e experimentando! O CSS é poderoso e divertido.
+   =================================================================================== */
