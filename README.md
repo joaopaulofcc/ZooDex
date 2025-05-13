@@ -70,6 +70,7 @@ zoodex/
 ├── package.json                # Metadados do projeto e dependências
 ├── pnpm-lock.yaml              # Lockfile do PNPM (gerenciador de pacotes)
 └── README.md                   # Este arquivo!
+```
 
 ## 🛠️ Configuração e Instalação
 
