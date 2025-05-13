@@ -300,7 +300,7 @@ const MapComponent = ({ animal }) => {
           🌍
         </span>{" "}
         {/* Melhor que mapa simples para distribuição */}
-        Distribuição Geográfica e Países Nativos de {nomeComumDoAnimal}
+        Distribuição Geográfica e Países Nativos
       </h2>
       <p className={styles.mapIntroText}>
         O mapa abaixo destaca os países onde esta espécie pode ser encontrada
