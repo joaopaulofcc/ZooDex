@@ -1128,37 +1128,6 @@ export const processedAnimalData = allAnimalDataRaw
   })
   .filter((animalData) => animalData.id_animal); // Remove quaisquer animais que, por algum motivo, não tenham um id_animal.
 
-// --- FUNÇÕES PARA CORES DE EXTINÇÃO (USANDO CLASSES TAILWIND) ---
-/*
-  Esta função retorna o nome de uma classe CSS do Tailwind
-  correspondente à categoria de extinção.
-  É usada para aplicar a cor de fundo correta nos cards e detalhes dos animais.
-
-  Parâmetro:
-  - category: A sigla da categoria de extinção (ex: "LC", "EN").
-
-  Exemplo de uso no JSX (com CSS Modules):
-  <div className={`${styles.statusBadge} ${getExtinctionTailwindColor(animal.nivel_extincao.categoria)}`}>
-    {animal.nivel_extincao.descricao}
-  </div>
-  Nota: Para usar diretamente com Tailwind, o componente precisa ter acesso às classes globais do Tailwind.
-*/
-export const getExtinctionTailwindColor = (category) => {
-  const colorMap = {
-    LC: "bg-lc", // Estas classes (bg-lc, bg-nt, etc.) devem estar definidas no seu tailwind.config.js
-    NT: "bg-nt",
-    VU: "bg-vu",
-    EN: "bg-en",
-    CR: "bg-cr",
-    EW: "bg-ew",
-    EX: "bg-ex",
-    DD: "bg-dd",
-    NE: "bg-ne",
-  };
-  // Retorna a classe correspondente ou uma classe padrão se a categoria não for encontrada.
-  return colorMap[String(category).toUpperCase()] || "bg-default-extinction";
-};
-
 // --- FUNÇÕES PARA CORES DE EXTINÇÃO (USANDO VALORES HEXADECIMAIS) ---
 /*
   Esta função retorna o valor hexadecimal da cor correspondente
@@ -1175,8 +1144,6 @@ export const getExtinctionTailwindColor = (category) => {
   </div>
 */
 export const getExtinctionHexColor = (category) => {
-  // Este mapa de cores DEVE corresponder às cores definidas no seu arquivo 'tailwind.config.js'
-  // e/ou no seu arquivo ':root' em 'index.css'. Manter essa consistência é importante.
   const themeColors = {
     lc: "#AED581", // Verde claro para "Pouco Preocupante"
     nt: "#DCE775", // Amarelo-esverdeado para "Quase Ameaçado"
