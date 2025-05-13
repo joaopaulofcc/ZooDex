@@ -662,45 +662,26 @@ const AnimalDetail = ({ animal, onBack }) => {
   // Suas dependências são `tazoCabecalhoVirado` (porque a lógica de qual imagem abrir
   // depende se o tazo estava virado ANTES do clique), `tazoFrontUrl`, `tazoBackUrl`
   // (as URLs das imagens), e `abrirImagemNoLightbox` (a função que chamamos).
-  const lidarComInteracaoNoTazo = useCallback(
-    (evento) => {
-      // `evento.stopPropagation()`: Se o nosso tazo estiver DENTRO de outro elemento
-      // que também tem um `onClick`, esta linha impede que o clique no tazo
-      // "borbulhe" para cima e acione o `onClick` do elemento pai acidentalmente.
-      // É uma boa prática, especialmente para elementos interativos complexos.
-      if (evento) evento.stopPropagation();
+  const lidarComInteracaoNoTazo = useCallback((evento) => {
+    // `evento.stopPropagation()`: Como antes, impede que o clique/toque "vaze"
+    // para elementos pais e acione outros handlers acidentalmente.
+    // Essencial para garantir que só o tazo reaja a esta interação específica.
+    if (evento) evento.stopPropagation();
 
-      // AÇÃO 1: VIRAR O TAZO (Alternar o estado `tazoCabecalhoVirado`)
-      // Usamos a forma funcional de `definirTazoCabecalhoVirado`.
-      // `estadoAnteriorVirado` representa o valor ATUAL de `tazoCabecalhoVirado` ANTES desta atualização.
-      // `!estadoAnteriorVirado` simplesmente inverte esse valor (true vira false, false vira true).
-      // Esta é a maneira mais segura de atualizar um estado que depende do seu valor anterior.
-      definirTazoCabecalhoVirado(
-        (estadoAnteriorVirado) => !estadoAnteriorVirado
-      );
+    // AÇÃO ÚNICA: VIRAR O TAZO (Alternar o estado `tazoCabecalhoVirado`)
+    // Usamos a forma funcional de `definirTazoCabecalhoVirado` (passando uma função
+    // que recebe o estado anterior).
+    // `estadoAnteriorVirado` representa o valor ATUAL de `tazoCabecalhoVirado` ANTES desta atualização.
+    // `!estadoAnteriorVirado` simplesmente INVERTE esse valor (se era `true` vira `false`, se era `false` vira `true`).
+    // Esta é a maneira mais segura e recomendada de atualizar um estado que depende do seu valor anterior.
+    definirTazoCabecalhoVirado((estadoAnteriorVirado) => !estadoAnteriorVirado);
 
-      // AÇÃO 2: ABRIR A IMAGEM (que acabou de ficar visível) NO LIGHTBOX.
-      // IMPORTANTE: A atualização de estado com `definirTazoCabecalhoVirado` é ASSÍNCRONA.
-      // Isso significa que o valor de `tazoCabecalhoVirado` AQUI DENTRO desta função
-      // AINDA É o valor ANTIGO, de ANTES da chamada de `definirTazoCabecalhoVirado` acima.
-      // O React "agenda" a atualização para acontecer um pouquinho depois.
-      // ENTÃO, para saber qual imagem estará visível DEPOIS que o flip acontecer,
-      // precisamos pensar ao contrário do estado ATUAL de `tazoCabecalhoVirado`:
-      //  - Se `tazoCabecalhoVirado` é `false` AGORA (mostrando a frente), ele VAI SE TORNAR `true` (mostrar o verso).
-      //    Logo, a imagem a ser ampliada é `tazoBackUrl`.
-      //  - Se `tazoCabecalhoVirado` é `true` AGORA (mostrando o verso), ele VAI SE TORNAR `false` (mostrar a frente).
-      //    Logo, a imagem a ser ampliada é `tazoFrontUrl`.
-      const imagemQueSeraVisivelAposFlip = !tazoCabecalhoVirado
-        ? tazoBackUrl
-        : tazoFrontUrl;
+    // REMOVEMOS A PARTE QUE ABRIA O LIGHTBOX!
+    // A lógica anterior que calculava `imagemQueSeraVisivelAposFlip` e chamava
+    // `abrirImagemNoLightbox()` foi removida daqui.
 
-      // Abre no lightbox apenas se a URL da imagem que vai ficar visível for válida (existir).
-      if (imagemQueSeraVisivelAposFlip) {
-        abrirImagemNoLightbox(imagemQueSeraVisivelAposFlip);
-      }
-    },
-    [tazoCabecalhoVirado, tazoFrontUrl, tazoBackUrl, abrirImagemNoLightbox]
-  );
+    // E é só isso! Agora, clicar/tocar no tazo só faz ele virar. Simples e direto!
+  }, []);
 
   // --- H. RENDERIZAÇÃO FINAL DO COMPONENTE AnimalDetail (O QUE APARECE NA TELA!) ---
   return (
