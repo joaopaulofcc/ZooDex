@@ -1,0 +1,310 @@
+/* Caminho: src/components/Header.module.css */
+
+/* ===================================================================================
+   ARQUIVO: Header.module.css
+   DESCRIÇÃO: Estilos CSS específicos para o componente Header.
+              Este arquivo utiliza CSS Modules, o que significa que as classes
+              definidas aqui são "escopadas" localmente para o Header.jsx.
+              Isso é ótimo para evitar conflitos de nomes de classes com outros
+              componentes da aplicação.
+              Podemos usar variáveis CSS globais (definidas em :root no src/index.css)
+              para manter a consistência do design (cores, fontes, etc.).
+   =================================================================================== */
+
+/* --- ESTILO PRINCIPAL DO CABEÇALHO (.header) --- */
+/* Aplica-se à tag <header> no Header.jsx. */
+.header {
+  background-color: var(
+    --color-primary
+  ); /* Cor de fundo verde escura (variável global). */
+  color: white; /* Cor padrão do texto dentro do cabeçalho será branca, para contraste. */
+  padding: 1rem 1.5rem; /* Espaçamento interno: 1rem (16px) no topo e na base,
+                           1.5rem (24px) nas laterais. Este é o padding base (mobile-first). */
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.18); /* Sombra sutil abaixo do cabeçalho para dar profundidade.
+                                                (deslocamento-x | deslocamento-y | raio-do-blur | cor-com-opacidade) */
+
+  /* POSICIONAMENTO PEGAJOSO (STICKY):
+     Faz com que o cabeçalho permaneça fixo no topo da janela do navegador
+     quando o usuário rola a página para baixo. */
+  position: sticky;
+  top: 0; /* Define que o cabeçalho deve "grudar" a 0 pixels do topo da viewport. */
+  /* 'left: 0;' e 'right: 0;' podem ser adicionados para garantir que se estenda
+     por toda a largura se o elemento pai não o fizer, mas geralmente não é necessário
+     para um <header> que é filho direto do #root ou de um container de largura total. */
+  z-index: var(
+    --z-index-header,
+    100
+  ); /* Ordem de empilhamento. Um z-index maior fica "na frente"
+                                          de elementos com z-index menor. Garante que o header
+                                          fique sobre outros conteúdos da página ao rolar.
+                                          Usamos uma variável global ou um valor padrão. */
+  width: 100%; /* Garante que o header ocupe toda a largura da viewport. */
+  box-sizing: border-box; /* Garante que o padding não aumente a largura total do header. */
+}
+
+/* --- WRAPPER PARA O CONTEÚDO PRINCIPAL (LOGO, TÍTULO, BOTÃO SURPRESA) (.headerContentWrapper) --- */
+/* Este <div> ajuda a agrupar e alinhar os elementos principais do cabeçalho. */
+.headerContentWrapper {
+  display: flex; /* Ativa o layout Flexbox para os itens filhos. */
+  flex-direction: column; /* Em telas pequenas (mobile-first), os itens são empilhados verticalmente. */
+  align-items: center; /* Centraliza os itens horizontalmente dentro do wrapper (quando em coluna). */
+  gap: 0.8rem; /* (aprox. 13px) Espaço entre os itens flex (entre o bloco logo/título e o botão). */
+
+  /* Controla a largura máxima e centraliza este wrapper dentro do .header. */
+  max-width: 1200px; /* Largura máxima para o conteúdo do cabeçalho (pode ser var(--container-max-width)). */
+  margin-left: auto; /* Truque para centralizar um bloco com max-width. */
+  margin-right: auto;
+  margin-bottom: 1rem; /* Espaço abaixo deste grupo, antes do campo de busca. */
+  width: 100%; /* Para ocupar o espaço do .header, respeitando o max-width. */
+}
+
+/* --- CONTAINER DO LOGO E TÍTULO (.logoAndTitle) --- */
+/* Este <div> agrupa o logo e o título para mantê-los juntos visualmente. */
+.logoAndTitle {
+  display: flex; /* Alinha o logo e o título lado a lado (horizontalmente). */
+  align-items: center; /* Centraliza verticalmente o logo e o título um em relação ao outro. */
+  gap: 0.8rem; /* Espaço entre a imagem do logo e o texto do título. */
+  text-decoration: none; /* Remove sublinhado se este grupo for um link. */
+  color: inherit; /* Faz com que o texto herde a cor do pai (útil se for um link). */
+}
+
+/* --- ESTILO DO LOGOTIPO (.logo) --- */
+.logo {
+  height: 45px; /* Altura do logo. A largura se ajustará proporcionalmente (width: auto;). */
+  width: auto; /* Garante que a largura seja automática para manter a proporção da imagem. */
+  object-fit: contain; /* Garante que a imagem inteira caiba, sem cortar. */
+}
+
+/* --- ESTILO DO TÍTULO PRINCIPAL (.title) --- */
+.title {
+  font-family: var(--font-primary); /* Fonte Nunito (variável CSS global). */
+  font-weight: 800; /* Peso "Extra Bold". */
+  font-size: 2rem; /* Tamanho da fonte (para mobile/telas pequenas). */
+  line-height: 1.1; /* Altura da linha um pouco mais justa para títulos grandes. */
+  margin: 0; /* Remove margens padrão que a tag <h1> pode ter. */
+  letter-spacing: -0.5px; /* Leve ajuste no espaçamento entre letras. */
+  color: white; /* Garante que o título seja branco. */
+}
+.title span {
+  /* Para o emoji, se ele estiver dentro de um span */
+  vertical-align: middle; /* Tenta alinhar melhor o emoji com o texto. */
+}
+
+/* --- ESTILO DO BOTÃO "ANIMAL SURPRESA" (.randomButton) --- */
+.randomButton {
+  background-color: var(--color-secondary); /* Laranja (variável global). */
+  color: white;
+  font-family: var(--font-primary);
+  padding: 0.65rem 1.3rem; /* Espaçamento interno. */
+  border: none;
+  border-radius: var(--border-radius); /* Cantos mais arredondados. */
+  font-size: 0.9rem;
+  font-weight: 700; /* Bold. */
+  white-space: nowrap; /* Impede que o texto do botão quebre em várias linhas. */
+  cursor: pointer;
+  transition: background-color 0.2s ease-out, transform 0.15s ease-out,
+    box-shadow 0.2s ease-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil no botão. */
+}
+.randomButton:hover,
+.randomButton:focus-visible {
+  background-color: var(--color-secondary-darker); /* Laranja mais escuro. */
+  transform: scale(1.03) translateY(-1px); /* Leve aumento e elevação. */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra mais pronunciada. */
+}
+.randomButton:focus-visible {
+  outline: 2px solid var(--color-primary-darker); /* Contorno verde escuro para foco. */
+  outline-offset: 2px;
+}
+.randomButton:active {
+  /* Quando o botão está sendo pressionado */
+  transform: scale(0.98) translateY(0); /* Leve "afundada". */
+}
+
+/* --- CONTAINER DO CAMPO DE BUSCA (.searchContainer) --- */
+.searchContainer {
+  width: 100%;
+  max-width: 640px; /* Uma largura máxima razoável para o campo de busca. */
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1rem; /* Espaço abaixo do campo de busca, antes dos botões de ordenação. */
+  padding-left: 0.5rem; /* Pequeno padding lateral para telas muito estreitas. */
+  padding-right: 0.5rem;
+  box-sizing: border-box;
+}
+
+/* --- ESTILO DO CAMPO DE INPUT DE BUSCA (.searchInput) --- */
+.searchInput {
+  width: 100%;
+  padding: 0.8rem 1rem; /* Espaçamento interno um pouco maior. */
+  border-radius: var(--border-radius);
+  border: 2px solid var(--color-border-light, #ced4da); /* Borda cinza clara, um pouco mais grossa. */
+  color: var(--color-text-light); /* Cor do texto digitado. */
+  font-size: 1rem; /* Tamanho da fonte do input. */
+  font-family: var(--font-secondary); /* Fonte secundária para o input. */
+  outline: none; /* Remove o contorno padrão do navegador ao focar. */
+  box-sizing: border-box;
+  transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+/* Estilo para o texto placeholder (dica dentro do input). */
+.searchInput::placeholder {
+  color: var(--color-text-muted, #6c757d); /* Cor cinza médio. */
+  opacity: 0.9; /* Levemente transparente. */
+  font-style: italic;
+}
+/* Efeito visual quando o campo de busca está focado. */
+.searchInput:focus {
+  border-color: var(--color-secondary); /* Muda a cor da borda para laranja. */
+  /* Adiciona um "glow" (brilho) sutil ao redor do input. */
+  box-shadow: 0 0 0 3.5px rgba(239, 108, 0, 0.25); /* Cor secundária com transparência. */
+}
+
+/* --- CONTAINER DOS BOTÕES DE ORDENAÇÃO (.sortControls) --- */
+.sortControls {
+  display: flex; /* Usa Flexbox para alinhar os botões. */
+  flex-wrap: wrap; /* Permite que os botões quebrem para a próxima linha se não couberem todos. */
+  justify-content: center; /* Centraliza os botões horizontalmente. */
+  gap: 0.6rem 0.8rem; /* Espaço: 0.6rem vertical, 0.8rem horizontal entre os botões. */
+  padding: 0 0.5rem; /* Padding lateral para evitar que os botões colem nas bordas. */
+}
+
+/* --- ESTILO DOS BOTÕES DE ORDENAÇÃO (.sortButton) --- */
+.sortButton {
+  background-color: var(
+    --color-bg-light
+  ); /* Fundo cinza claro, para se destacar do header. */
+  color: var(--color-primary-darker); /* Texto verde escuro. */
+  padding: 0.5rem 1rem; /* Espaçamento interno. */
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--color-primary-darker); /* Borda verde escura. */
+  font-size: 0.8rem; /* Tamanho da fonte. */
+  font-weight: 600; /* Semi-bold. */
+  font-family: var(--font-secondary);
+  cursor: pointer;
+  transition: background-color 0.2s ease-out, color 0.2s ease-out,
+    transform 0.15s ease-out, box-shadow 0.2s ease-out;
+  white-space: nowrap; /* Evita quebra de linha no texto do botão. */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+/* Efeitos ao passar o mouse ou focar no botão de ordenação. */
+.sortButton:hover,
+.sortButton:focus-visible {
+  background-color: var(--color-primary-darker); /* Fundo verde escuro. */
+  color: white; /* Texto branco. */
+  border-color: var(--color-primary); /* Borda verde principal. */
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+.sortButton:focus-visible {
+  outline: 2px solid var(--color-secondary); /* Contorno laranja para foco. */
+  outline-offset: 2px;
+}
+.sortButton:active {
+  transform: translateY(0) scale(0.98);
+  background-color: var(--color-primary);
+}
+
+/* --- MEDIA QUERIES (AJUSTES PARA TELAS MAIORES) --- */
+/* Media Query: Aplica estes estilos quando a largura da tela é 640 pixels ou maior.
+   Este é um breakpoint comum, frequentemente chamado de 'sm' (small) em frameworks como Tailwind. */
+@media (min-width: 640px) {
+  .header {
+    padding-left: 2rem; /* Aumenta o padding lateral do cabeçalho em telas maiores. */
+    padding-right: 2rem;
+  }
+
+  /* No .headerContentWrapper, mudamos a direção do flex para linha e ajustamos o alinhamento. */
+  .headerContentWrapper {
+    flex-direction: row; /* Itens (logo/título e botão surpresa) agora ficam lado a lado. */
+    justify-content: space-between; /* Coloca espaço entre o grupo logo/título e o botão surpresa,
+                                       empurrando-os para as extremidades. */
+    align-items: center; /* Centraliza verticalmente os itens na linha. */
+    margin-bottom: 1.5rem; /* Aumenta um pouco o espaço abaixo deste grupo. */
+  }
+
+  .logo {
+    height: 50px; /* Logo um pouco maior em telas maiores. */
+  }
+
+  .title {
+    font-size: 2.4rem; /* Título principal maior. */
+  }
+
+  .randomButton {
+    font-size: 1rem; /* Botão "Animal Surpresa" com fonte maior. */
+    padding: 0.7rem 1.5rem; /* Botão maior. */
+  }
+
+  .searchInput {
+    font-size: 1.05rem; /* Fonte do input de busca um pouco maior. */
+  }
+
+  .sortButton {
+    font-size: 0.875rem; /* Botões de ordenação com fonte maior (text-sm do Tailwind). */
+    padding: 0.6rem 1.1rem; /* Botões de ordenação maiores. */
+  }
+
+  /* Remove o padding lateral extra dos containers de busca e ordenação em telas maiores,
+     pois o .header já tem um padding lateral maior. */
+  .searchContainer,
+  .sortControls {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* Media Query para telas ainda maiores (ex: desktops). */
+@media (min-width: 1024px) {
+  .header {
+    padding-top: 1.25rem; /* Padding superior e inferior um pouco maior. */
+    padding-bottom: 1.25rem;
+  }
+  .title {
+    font-size: 2.75rem; /* Título ainda maior. */
+    letter-spacing: -1px; /* Espaçamento entre letras mais "apertado" para títulos grandes. */
+  }
+  .logo {
+    height: 55px;
+  }
+  .searchContainer {
+    max-width: 720px; /* Campo de busca pode ser um pouco mais largo. */
+  }
+  .sortControls {
+    gap: 0.7rem 1rem; /* Aumenta um pouco o espaçamento entre os botões de ordenação. */
+  }
+}
+
+/* ===================================================================================
+   NOTAS FINAIS PARA OS ALUNOS SOBRE ESTE CSS:
+
+   - Mobile-First: Os estilos base são definidos para telas pequenas primeiro.
+     Depois, usamos '@media (min-width: ...)' para adicionar ou sobrescrever estilos
+     para telas progressivamente maiores. Esta é uma abordagem comum e recomendada.
+
+   - Variáveis CSS (Custom Properties):
+     O uso de `var(--nome-da-variavel)` (ex: `var(--color-primary)`) é crucial
+     para manter um design consistente e fácil de atualizar. Se a cor primária
+     precisar mudar, você só a altera em um lugar (`:root` no `index.css`).
+
+   - Flexbox (`display: flex`):
+     Uma ferramenta poderosa para alinhar e distribuir espaço entre itens em um container.
+     Propriedades chave usadas aqui: `flex-direction`, `align-items`, `justify-content`, `gap`.
+
+   - CSS Modules: Lembre-se que `styles.algumaCoisa` no JSX se refere a uma classe
+     `.algumaCoisa` neste arquivo, mas o nome da classe no HTML final será único
+     (ex: `Header_algumaCoisa__hash123`).
+
+   - Pseudo-classes (:hover, :focus-visible, :active):
+     Essenciais para fornecer feedback visual ao usuário sobre interações.
+     `:focus-visible` é particularmente importante para acessibilidade, mostrando
+     estilos de foco apenas quando o usuário navega via teclado.
+
+   - Transições (`transition`):
+     Usadas para suavizar mudanças de estilo (ex: mudança de cor de fundo no hover),
+     tornando a interface mais agradável.
+
+   - Acessibilidade (Considerações de Design):
+     - Contraste de cores: Garantir que o texto seja legível sobre a cor de fundo.
+     - Tamanho do clique/toque: Botões e inputs devem ter um tamanho razoável.
+     - Feedback de foco claro.
+   =================================================================================== */

@@ -1,0 +1,227 @@
+/* Caminho: src/index.css */
+
+/* ===================================================================================
+   ARQUIVO: index.css
+   DESCRIÇÃO: Este é o arquivo CSS global principal da sua aplicação.
+              Os estilos definidos aqui têm o potencial de afetar todos os elementos
+              da sua aplicação, a menos que sejam especificamente sobrescritos
+              por regras mais específicas (como as de CSS Modules nos componentes
+              ou estilos inline).
+
+              É um bom lugar para:
+              1. Definir variáveis CSS globais (Custom Properties) para cores, fontes, etc.
+              2. Aplicar "resets" ou "normalizações" de CSS para garantir uma base
+                 consistente entre diferentes navegadores.
+              3. Definir estilos base para elementos HTML comuns como <body>, <h1>-<h6>, <p>, <a>, etc.
+   =================================================================================== */
+
+/* --- DEFINIÇÃO DE VARIÁVEIS CSS GLOBAIS (:root) --- */
+/*
+  O seletor ':root' representa o elemento raiz do documento HTML (a tag <html>).
+  É o local padrão e recomendado para declarar variáveis CSS globais.
+  Variáveis CSS (também chamadas de Custom Properties) são prefixadas com '--' (dois hifens).
+  Elas permitem que você armazene valores (como cores, tamanhos de fonte, espaçamentos)
+  em um local e os reutilize em todo o seu CSS.
+  Isso torna seu design mais consistente e fácil de manter. Se você precisar alterar
+  uma cor primária, por exemplo, basta alterá-la aqui e a mudança se refletirá
+  em todos os lugares onde a variável é usada.
+*/
+:root {
+  /* -- TIPOGRAFIA -- */
+  /* Famílias de fontes principais para a aplicação. */
+  --font-primary: "Nunito", Arial, sans-serif; /* Fonte principal, usada para títulos e elementos de destaque.
+                                                  "Nunito" é a preferida. Arial e sans-serif são fallbacks
+                                                  caso Nunito não esteja disponível ou não carregue. */
+  --font-secondary: "Open Sans", Verdana, sans-serif; /* Fonte secundária, para texto corrido e parágrafos. */
+
+  /* -- PALETA DE CORES PRINCIPAL -- */
+  /* Cores base que definem a identidade visual do ZooDex. */
+  --color-bg-light: #f0f2f5; /* Cinza muito claro, usado como cor de fundo principal da página. */
+  --color-text-light: #212529; /* Cinza escuro (quase preto), para texto principal com boa legibilidade. */
+  --color-text-muted: #6c757d; /* Cinza médio, para textos secundários, placeholders, ou informações menos importantes. */
+  --color-primary: #2e7d32; /* Verde Floresta Escuro: cor primária da marca, usada para destaques importantes. */
+  --color-primary-darker: #1b4d1e; /* Um tom mais escuro da cor primária, útil para :hover ou bordas. */
+  --color-secondary: #ef6c00; /* Laranja Queimado: cor secundária, para botões de ação, alertas, etc. */
+  --color-secondary-darker: #c65400; /* Um tom mais escuro da cor secundária. */
+  --color-card-bg: #ffffff; /* Branco, usado como cor de fundo para os cards dos animais. */
+  --color-shadow: rgba(
+    0,
+    0,
+    0,
+    0.1
+  ); /* Preto com 10% de opacidade, para sombras suaves. */
+  --color-border-light: #dee2e6; /* Cinza claro, para bordas sutis em inputs, cards, etc. */
+  --color-error: #dc3545; /* Vermelho, para mensagens de erro ou validação. */
+  --color-success: #198754; /* Verde, para mensagens de sucesso. */
+
+  /* -- CORES DE NÍVEL DE EXTINÇÃO -- */
+  /* Cores específicas para cada status de conservação dos animais.
+     Essas cores ajudam na identificação visual rápida do nível de risco. */
+  --color-lc: #aed581; /* Pouco Preocupante (Least Concern) */
+  --color-nt: #dce775; /* Quase Ameaçado (Near Threatened) */
+  --color-vu: #ffee58; /* Vulnerável (Vulnerable) */
+  --color-en: #ffa726; /* Em Perigo (Endangered) */
+  --color-cr: #ef5350; /* Criticamente em Perigo (Critically Endangered) */
+  --color-ew: #7e57c2; /* Extinto na Natureza (Extinct in the Wild) */
+  --color-ex: #616161; /* Extinto (Extinct) */
+  --color-dd: #bdbdbd; /* Dados Insuficientes (Data Deficient) */
+  --color-ne: #e0e0e0; /* Não Avaliado (Not Evaluated) */
+  --color-default-extinction: #cccccc; /* Cor padrão para status de extinção desconhecido ou não mapeado. */
+
+  /* -- TAMANHOS E ESPAÇAMENTOS -- */
+  /* Raio da Borda (para cantos arredondados) */
+  --border-radius: 8px; /* Raio de borda padrão, para elementos maiores como cards. */
+  --border-radius-small: 4px; /* Raio de borda menor, para botões, inputs, tags. */
+
+  /* Espaçamentos (pode ser expandido conforme necessário) */
+  --spacing-small: 0.5rem; /* 8px se 1rem = 16px */
+  --spacing-medium: 1rem; /* 16px */
+  --spacing-large: 1.5rem; /* 24px */
+
+  /* Z-indexes (para controle de empilhamento de camadas) */
+  --z-index-header: 100;
+  --z-index-modal: 1000;
+  --z-index-dropdown: 500;
+}
+
+/* --- ESTILOS BASE PARA ELEMENTOS HTML --- */
+
+/* Estilos aplicados à tag <html> e <body> para definir comportamentos básicos da página. */
+html {
+  font-size: 16px; /* Define o tamanho base da fonte para a unidade 'rem'.
+                      1rem será igual a 16px. Ajustar este valor pode escalar
+                      todos os elementos que usam 'rem' proporcionalmente. */
+  scroll-behavior: smooth; /* Habilita rolagem suave quando o usuário clica em links âncora (#). */
+}
+
+body {
+  font-family: var(
+    --font-secondary
+  ); /* Define a família de fontes padrão para todo o texto da página. */
+  background-color: var(
+    --color-bg-light
+  ); /* Define a cor de fundo padrão da página. */
+  color: var(--color-text-light); /* Define a cor padrão do texto. */
+  margin: 0; /* Remove as margens padrão que os navegadores aplicam ao <body>.
+                Isso dá mais controle sobre o layout. */
+  line-height: 1.6; /* Define a altura da linha padrão para o texto.
+                       Um valor de 1.6 (sem unidade) significa 1.6 vezes o tamanho da fonte,
+                       o que geralmente melhora a legibilidade. */
+
+  /* Melhorias para renderização de fontes (anti-aliasing):
+     Estas propriedades tentam suavizar as bordas das fontes para melhor aparência. */
+  -webkit-font-smoothing: antialiased; /* Para navegadores baseados em WebKit (Chrome, Safari, Edge). */
+  -moz-osx-font-smoothing: grayscale; /* Para Firefox em macOS. */
+
+  /* Garante que o body possa ocupar pelo menos toda a altura da janela do navegador. */
+  min-height: 100vh; /* 'vh' é uma unidade relativa à altura da viewport (janela do navegador).
+                        100vh = 100% da altura da viewport. */
+  display: flex; /* Configura o body para usar Flexbox. */
+  flex-direction: column; /* Faz com que os filhos diretos do body (como #root) se empilhem verticalmente. */
+}
+
+/*
+  Estilos para o container principal do React (#root).
+  Esta é a <div id="root"></div> no seu 'public/index.html' onde a aplicação React é montada.
+*/
+#root {
+  display: flex; /* Também usa Flexbox. */
+  flex-direction: column; /* Organiza os componentes filhos principais (Header, Main, Footer) em coluna. */
+  flex-grow: 1; /* Faz com que o #root cresça para ocupar qualquer espaço vertical disponível no body.
+                   Isso é importante para que o 'margin-top: auto' no Footer funcione corretamente. */
+  width: 100%; /* Garante que o #root ocupe toda a largura. */
+}
+
+/* --- ESTILIZAÇÃO DA BARRA DE ROLAGEM (OPCIONAL E ESPECÍFICO DO NAVEGADOR) --- */
+/*
+  Estes estilos customizam a aparência da barra de rolagem.
+  Funcionam principalmente em navegadores baseados em WebKit (Chrome, Safari, Edge).
+  Firefox tem sua própria forma de estilizar scrollbars (usando 'scrollbar-width' e 'scrollbar-color').
+  Esta é uma melhoria puramente estética e pode ser removida se não desejada.
+*/
+::-webkit-scrollbar {
+  width: 10px; /* Largura da barra de rolagem vertical. */
+  height: 10px; /* Altura da barra de rolagem horizontal. */
+}
+::-webkit-scrollbar-track {
+  /* O "caminho" ou "trilha" por onde a barra de rolagem se move. */
+  background: #f1f1f1; /* Cor de fundo do caminho (um cinza claro). */
+  border-radius: 10px; /* Cantos arredondados para o caminho. */
+}
+::-webkit-scrollbar-thumb {
+  /* O "polegar" ou a parte da barra que o usuário arrasta. */
+  background: #a0a0a0; /* Cor do polegar (um cinza médio). */
+  border-radius: 10px; /* Cantos arredondados para o polegar. */
+  border: 2px solid #f1f1f1; /* Adiciona uma pequena borda da cor do track para efeito. */
+}
+::-webkit-scrollbar-thumb:hover {
+  /* Quando o mouse está sobre o polegar. */
+  background: #777777; /* Cor mais escura para feedback. */
+}
+
+/* --- CLASSE UTILITÁRIA GLOBAL: .visually-hidden --- */
+/*
+  Esta classe é usada para esconder conteúdo visualmente, mas mantê-lo acessível
+  para leitores de tela. É uma técnica importante para acessibilidade (a11y).
+  Por exemplo, você pode ter um ícone que é autoexplicativo visualmente, mas
+  precisa de um texto descritivo para usuários de leitores de tela.
+*/
+.visually-hidden {
+  position: absolute !important; /* Tira do fluxo normal e permite posicionamento preciso. '!important' é usado
+                                   com cautela, mas aqui garante que outras regras não interfiram. */
+  height: 1px;
+  width: 1px; /* Reduz o tamanho ao mínimo. */
+  overflow: hidden; /* Esconde qualquer conteúdo que exceda esse tamanho mínimo. */
+  clip: rect(
+    1px,
+    1px,
+    1px,
+    1px
+  ); /* Técnica antiga, mas ainda eficaz para esconder conteúdo.
+                                   Define uma área de recorte minúscula. */
+  clip-path: inset(
+    50%
+  ); /* Técnica mais moderna para esconder, criando um clipe interno. */
+  white-space: nowrap; /* Impede que o texto quebre em várias linhas, caso haja. */
+  border: 0; /* Remove qualquer borda. */
+  margin: -1px; /* Move o elemento para fora da tela. */
+  padding: 0; /* Remove qualquer preenchimento. */
+}
+
+/* --- ESTILOS GLOBAIS PARA MENSAGENS DE CARREGAMENTO E ERRO --- */
+/*
+  Estas classes podem ser usadas em qualquer lugar na aplicação para exibir
+  mensagens de carregamento ou erro de forma consistente.
+*/
+.loading-message,
+.error-message {
+  text-align: center; /* Centraliza o texto da mensagem. */
+  font-size: 1.1rem; /* Tamanho da fonte um pouco maior para destaque. */
+  padding: var(--spacing-large) var(--spacing-medium); /* Usa variáveis de espaçamento. */
+  color: var(--color-text-muted); /* Cor de texto secundária. */
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.error-message {
+  color: var(
+    --color-error
+  ); /* Mensagens de erro usam a cor de erro definida. */
+  background-color: #f8d7da; /* Um fundo rosa claro para erros. */
+  border: 1px solid #f5c6cb; /* Borda rosa para erros. */
+  border-radius: var(--border-radius-small);
+}
+
+/* --- MELHORIA OPCIONAL: BOX-SIZING GLOBAL --- */
+/*
+  Pode ser útil adicionar isso para um comportamento mais intuitivo do Box Model:
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  Isso faz com que 'padding' e 'border' sejam incluídos na largura e altura
+  totais de um elemento, em vez de serem adicionados a elas.
+  Muitos desenvolvedores consideram isso uma configuração base mais fácil de trabalhar.
+  Se você usa um "reset CSS" ou "normalize CSS" mais completo, ele pode já incluir isso.
+*/

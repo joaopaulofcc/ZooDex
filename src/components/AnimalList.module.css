@@ -1,0 +1,167 @@
+/* Caminho: src/components/AnimalList.module.css */
+
+/* ===================================================================================
+   ARQUIVO: AnimalList.module.css
+   DESCRIÇÃO: Estilos CSS para o componente AnimalList.
+              O objetivo principal é criar um layout em grade (grid) responsivo
+              para exibir os cards de animais de forma organizada e agradável
+              em diferentes tamanhos de tela.
+              Este é um CSS Module, então a classe '.animalListContainer' será
+              localmente escopada.
+   =================================================================================== */
+
+/* --- ESTILO DO CONTAINER PRINCIPAL DA LISTA DE ANIMAIS (.animalListContainer) --- */
+/* Esta classe é aplicada à tag <section> no AnimalList.jsx. */
+.animalListContainer {
+  /* ATIVANDO O LAYOUT CSS GRID:
+     'display: grid;' transforma este elemento em um "grid container".
+     Isso nos dá o poder de organizar seus filhos diretos (os AnimalCards)
+     em um sistema de linhas e colunas. */
+  display: grid;
+
+  /* DEFININDO AS COLUNAS DO GRID (grid-template-columns):
+     Esta é a propriedade mais importante para definir a estrutura das colunas.
+     Vamos analisar cada parte:
+     - 'repeat(auto-fill, minmax(minWidth, maxWidthOrFraction))':
+       - 'repeat()': Permite repetir um padrão de trilha (coluna ou linha) várias vezes.
+       - 'auto-fill': Diz ao navegador para criar o máximo de colunas que couberem
+                      na largura disponível do container, baseado no tamanho especificado
+                      pelo 'minmax()'. Se as colunas criadas não preencherem toda a largura,
+                      'auto-fill' manterá o espaço reservado para colunas potenciais
+                      (o que pode deixar espaços vazios no final da linha se os itens
+                      não se expandirem para preencher).
+                      Uma alternativa é 'auto-fit', que se comporta de forma semelhante, mas
+                      se houver espaço extra na linha, ele "colapsa" as trilhas vazias
+                      e permite que os itens existentes se expandam para preencher o espaço
+                      (se eles tiverem um tamanho máximo flexível como '1fr').
+       - 'minmax(280px, 1fr)': Define o tamanho de cada coluna.
+          - 'minmax(min, max)': Uma função que define um intervalo de tamanho para a trilha.
+                                A coluna pode encolher até 'min' e esticar até 'max'.
+          - '280px': A LARGURA MÍNIMA que cada coluna (e, por consequência, cada AnimalCard)
+                     deve ter. Os cards não ficarão mais estreitos que isso, a menos que
+                     a própria tela seja mais estreita que 280px.
+          - '1fr': A LARGURA MÁXIMA (ou ideal, neste contexto). 'fr' é uma unidade fracional
+                   que representa uma porção do espaço disponível NO CONTAINER DO GRID.
+                   '1fr' significa que, após alocar o espaço mínimo para todas as colunas
+                   que couberem, qualquer espaço restante será distribuído igualmente
+                   entre as colunas que têm '1fr' como seu tamanho máximo/flexível.
+                   Isso faz com que as colunas se estiquem para preencher a largura
+                   do container de forma responsiva.
+
+     COMO FUNCIONA NA PRÁTICA:
+     O navegador vai tentar encaixar o máximo de colunas de pelo menos 280px de largura.
+     Se, por exemplo, o container tiver 1000px de largura:
+       - Caberiam 3 colunas de 280px (3 * 280 = 840px).
+       - Sobrariam 1000px - 840px = 160px.
+       - Esses 160px seriam distribuídos igualmente entre as 3 colunas (cada uma pegaria
+         aproximadamente 53.33px a mais), graças ao '1fr'.
+     Se a tela diminuir, menos colunas de 280px caberão, e o layout se ajustará.
+  */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+
+  /* ESPAÇAMENTO ENTRE OS CARDS (gap):
+     'gap' é uma propriedade abreviada para 'row-gap' (espaço entre linhas) e
+     'column-gap' (espaço entre colunas). */
+  gap: 1.8rem; /* Define um espaço de 1.8rem (aprox. 29px se 1rem=16px)
+                  tanto verticalmente (entre as linhas de cards)
+                  quanto horizontalmente (entre os cards na mesma linha). */
+
+  /* Opcional: Adicionar padding ao container da lista para que os cards
+     não fiquem colados nas bordas do elemento <main> ou da tela.
+     Se o elemento <main> no App.js já tiver padding, isso pode ser redundante. */
+  padding: 0.5rem 0; /* Exemplo: pequeno padding vertical, sem padding horizontal
+                        (se o <main> já tiver padding horizontal). */
+}
+
+/* --- MEDIA QUERIES (AJUSTES RESPONSIVOS ADICIONAIS) --- */
+/*
+  Embora a configuração de 'grid-template-columns' com 'auto-fill' e 'minmax'
+  já torne o grid bastante responsivo, podemos usar Media Queries para refinar
+  ainda mais o comportamento em tamanhos de tela específicos.
+  Media Queries aplicam estilos apenas quando certas condições (como a largura da tela) são atendidas.
+*/
+
+/* Para telas MUITO pequenas (ex: smartphones em modo retrato, com largura máxima de 480px). */
+@media (max-width: 480px) {
+  .animalListContainer {
+    /* Em telas muito estreitas, podemos forçar uma única coluna para melhor legibilidade
+       e para evitar que os cards fiquem muito espremidos, mesmo que o minmax tente evitar. */
+    grid-template-columns: 1fr; /* Faz com que cada card ocupe 100% da largura do container. */
+    gap: 1.2rem; /* Reduz um pouco o espaçamento entre os cards quando estão em coluna única. */
+    /* Poderíamos também reduzir o tamanho mínimo dos cards aqui se eles ainda
+       estiverem muito grandes, mas forçar 1fr já é uma grande mudança.
+       Ex: grid-template-columns: minmax(0, 1fr); (permite encolher totalmente) */
+  }
+}
+
+/* Para telas pequenas a médias (ex: smartphones maiores em modo paisagem, tablets pequenos).
+   Este breakpoint (min-width: 640px) é comum (Tailwind 'sm'). */
+@media (min-width: 640px) {
+  .animalListContainer {
+    /* Podemos aumentar um pouco o tamanho mínimo dos cards ou o espaçamento.
+       Se a configuração padrão já estiver boa, esta media query pode não ser necessária. */
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(290px, 1fr)
+    ); /* Leve aumento no tamanho mínimo. */
+    gap: 2rem; /* Aumenta um pouco o espaçamento. */
+  }
+}
+
+/* Para telas médias a grandes (ex: tablets em modo paisagem, desktops pequenos).
+   Este breakpoint (min-width: 1024px) é comum (Tailwind 'lg'). */
+@media (min-width: 1024px) {
+  .animalListContainer {
+    /* Em telas maiores, podemos permitir que os cards tenham um tamanho mínimo maior
+       ou até mesmo fixar um número de colunas se o design pedir. */
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(300px, 1fr)
+    ); /* Mínimo um pouco maior. */
+    gap: 2.2rem; /* Espaçamento ainda maior. */
+
+    /* Exemplo alternativo: Se você quisesse no máximo 4 colunas em telas grandes:
+       grid-template-columns: repeat(auto-fill, minmax(300px, min(320px, 1fr)) );
+       Ou se quisesse exatamente 4 colunas (menos flexível, mas possível):
+       grid-template-columns: repeat(4, 1fr);
+    */
+  }
+}
+
+/* Para telas muito grandes (ex: desktops grandes, TVs).
+   Este breakpoint (min-width: 1280px) é comum (Tailwind 'xl'). */
+@media (min-width: 1280px) {
+  .animalListContainer {
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    /* Podemos adicionar um max-width ao próprio .animalListContainer aqui se não quisermos
+       que ele se estique indefinidamente, mesmo que o <main> no App.js já tenha um max-width.
+       Por exemplo: max-width: 1400px; margin-left: auto; margin-right: auto; */
+  }
+}
+
+/* ===================================================================================
+   NOTAS ADICIONAIS PARA OS ALUNOS SOBRE CSS GRID:
+
+   - Grid vs. Flexbox:
+     - Flexbox é ideal para layouts unidimensionais (em uma linha OU em uma coluna).
+     - Grid é ideal para layouts bidimensionais (linhas E colunas ao mesmo tempo).
+     Para uma galeria de cards, Grid geralmente oferece um controle mais robusto e direto.
+
+   - Propriedades do Grid Container (o pai, como .animalListContainer):
+     - 'display: grid'
+     - 'grid-template-columns', 'grid-template-rows'
+     - 'gap' (ou 'grid-gap', 'row-gap', 'column-gap')
+     - 'justify-items', 'align-items' (para alinhar itens DENTRO de suas células de grid)
+     - 'justify-content', 'align-content' (para alinhar o grid INTEIRO DENTRO do container,
+                                          se o grid for menor que o container)
+
+   - Propriedades dos Itens do Grid (os filhos, como os <AnimalCard />):
+     - 'grid-column-start', 'grid-column-end', 'grid-column' (para fazer um item ocupar múltiplas colunas)
+     - 'grid-row-start', 'grid-row-end', 'grid-row' (para ocupar múltiplas linhas)
+     - 'justify-self', 'align-self' (para alinhar um item específico DENTRO de sua célula)
+
+   - Ferramentas do Desenvolvedor do Navegador:
+     Inspecionar o elemento com 'display: grid' nas ferramentas do desenvolvedor
+     (F12 no Chrome/Edge/Firefox) geralmente mostra uma sobreposição visual do grid,
+     o que é EXTREMAMENTE útil para entender e depurar layouts de grid.
+   =================================================================================== */

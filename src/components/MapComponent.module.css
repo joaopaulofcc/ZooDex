@@ -1,0 +1,240 @@
+/* Caminho: src/components/MapComponent.module.css */
+
+/* ===================================================================================
+   ARQUIVO: MapComponent.module.css
+   DESCRIÇÃO: Estilos CSS para o componente MapComponent, que exibe o mapa de
+              distribuição dos animais e a lista de países nativos.
+              Este é um CSS Module, garantindo que as classes sejam escopadas.
+   =================================================================================== */
+
+/* --- CONTAINER DA SEÇÃO INTEIRA DO MAPA (.mapSectionContainer) --- */
+/* Este é o <section> que envolve tanto o título da seção, quanto o mapa e a lista de países. */
+.mapSectionContainer {
+  margin-bottom: 2.5rem; /* Espaço abaixo da seção do mapa, antes da próxima seção de detalhes. */
+  padding-bottom: 2rem; /* Espaçamento interno na base da seção. */
+  border-bottom: 1px solid var(--color-border-light); /* Linha sutil para separar da próxima seção. */
+}
+/* Remove a borda e margem inferior se esta for a última seção na página de detalhes. */
+.mapSectionContainer:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* --- TÍTULO DA SEÇÃO DO MAPA (.sectionTitle) --- */
+/* H2: "Distribuição Geográfica e Países Nativos de [Nome do Animal]" */
+.sectionTitle {
+  font-family: var(--font-primary); /* Fonte Nunito. */
+  font-size: 1.4rem; /* Tamanho inicial (mobile-first). */
+  color: var(--color-primary); /* Verde escuro. */
+  margin-top: 0; /* Remove margem superior padrão do h2. */
+  margin-bottom: 1rem; /* Espaço abaixo do título, antes da introdução ao mapa. */
+  border-bottom: 2px solid var(--color-secondary); /* Linha laranja abaixo do título. */
+  padding-bottom: 0.5rem; /* Espaço entre o texto do título e a linha laranja. */
+  display: inline-block; /* Faz a borda inferior se ajustar à largura do texto. */
+}
+.sectionTitle span[role="img"] {
+  /* Estilo para o emoji no título. */
+  margin-right: 0.6rem;
+  font-size: 1.1em; /* Emoji um pouco maior que o texto. */
+}
+
+/* --- TEXTO INTRODUTÓRIO DO MAPA (.mapIntroText) --- */
+/* Parágrafo <p> que explica brevemente o mapa. */
+.mapIntroText {
+  font-size: 0.9rem;
+  color: var(--color-text-muted); /* Cinza médio. */
+  margin-bottom: 1.5rem; /* Espaço antes do container do mapa. */
+  line-height: 1.5;
+  max-width: 700px; /* Limita a largura para melhor legibilidade. */
+  margin-left: auto; /* Centraliza se o container pai for mais largo. */
+  margin-right: auto;
+  text-align: center; /* Centraliza o texto introdutório. */
+}
+
+/* --- WRAPPER DO MAPA E DA LISTA DE PAÍSES (.mapContainerWrapper) --- */
+/* Este <div> agrupa o mapa em si (.mapDisplay) e a lista de países (.countryListFallback). */
+.mapContainerWrapper {
+  /* text-align: center; (Já definido no .mapIntroText, pode não ser necessário aqui
+                           a menos que queira centralizar o próprio .mapDisplay se ele tiver max-width) */
+}
+
+/* --- CONTAINER DO MAPA LEAFLET (.mapDisplay) --- */
+/* O <div> onde o <MapContainer> do React-Leaflet será renderizado. */
+.mapDisplay {
+  height: 300px; /* Altura inicial do mapa (mobile-first). */
+  width: 100%; /* Ocupa toda a largura disponível. */
+  max-width: 750px; /* Largura máxima para o mapa, para não ficar excessivamente largo em telas grandes. */
+  margin-top: 1rem; /* Espaço acima do mapa. */
+  margin-bottom: 1.5rem; /* Espaço abaixo do mapa, antes da lista de países. */
+  margin-left: auto; /* Centraliza o mapa se ele tiver max-width e o .mapContainerWrapper for mais largo. */
+  margin-right: auto;
+  border: 1px solid var(--color-border-light); /* Borda sutil ao redor do mapa. */
+  border-radius: var(
+    --border-radius-small
+  ); /* Cantos levemente arredondados. */
+  background-color: #eef2f7; /* Um cinza azulado muito claro para o fundo do mapa antes de carregar os "azulejos". */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil no mapa. */
+  position: relative; /* Para z-index funcionar corretamente em relação a outros elementos. */
+  z-index: 0; /* Garante que os controles do mapa (zoom, etc.) fiquem visíveis e acima do mapa base.
+                 O Leaflet gerencia o z-index interno de suas camadas. */
+}
+/* Placeholder para quando o mapa está carregando (se o MapContainer tiver a prop 'placeholder') */
+.mapDisplay .leaflet-map-pane:empty + .leaflet-control-container + p {
+  /* Exemplo de seletor para placeholder */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* --- SEÇÃO DA LISTA DE PAÍSES (ABAIXO DO MAPA) (.countryListFallback) --- */
+/* "Fallback" é um termo um pouco inadequado aqui se a lista é sempre mostrada,
+   mas mantém o nome original do seu código. Poderia ser .countryListSection. */
+.countryListFallback {
+  margin-top: 1.5rem; /* Espaço acima da lista de países. */
+  font-size: 0.9rem; /* Tamanho da fonte base para esta seção. */
+  text-align: center; /* Centraliza o título e a lista de países. */
+  padding: 0 1rem; /* Padding lateral para não colar nas bordas em telas pequenas. */
+}
+
+/* Título "Países onde o ... é nativo:" (.countryListTitle) */
+.countryListTitle {
+  font-size: 1.1em; /* Relativo ao font-size do .countryListFallback (0.9rem * 1.1). */
+  color: var(--color-text-light); /* Cor de texto principal. */
+  margin-bottom: 0.8rem; /* Espaço abaixo do título, antes da lista <ul>. */
+  font-weight: 600; /* Semi-bold. */
+  font-family: var(--font-primary);
+}
+
+/* Lista <ul> de países (.countryList) */
+.countryList {
+  list-style: none; /* Remove os marcadores (bolinhas) padrão da lista. */
+  padding-left: 0; /* Remove o preenchimento padrão à esquerda da lista <ul>. */
+  display: flex; /* Flexbox para os itens da lista. */
+  flex-wrap: wrap; /* Permite que os nomes dos países quebrem para a próxima linha se não couberem. */
+  justify-content: center; /* Centraliza os nomes dos países horizontalmente. */
+  gap: 8px 12px; /* Espaço entre os itens: 8px vertical, 12px horizontal. */
+  max-width: 700px; /* Largura máxima para a lista de países. */
+  margin-left: auto; /* Centraliza a lista. */
+  margin-right: auto;
+}
+
+/* Cada item <li> da lista de países (.countryListItem) */
+.countryListItem {
+  background-color: transparent; /* Fundo transparente por padrão. */
+  padding: 0.3rem 0.7rem; /* Espaçamento interno no item. */
+  border: 1px solid var(--color-border-light); /* Borda cinza clara. */
+  border-radius: var(--border-radius-small); /* Cantos arredondados. */
+  color: var(--color-text-muted); /* Cor do texto cinza médio. */
+  cursor: default; /* Cursor padrão. Poderia ser 'pointer' se houvesse uma ação de clique no país. */
+  transition: background-color 0.2s ease-out, color 0.2s ease-out,
+    border-color 0.2s ease-out, transform 0.15s ease-out;
+  font-size: 0.85em; /* Relativo ao .countryListFallback. */
+}
+
+/* Efeito de hover para itens da lista de países. */
+.countryListItem:hover {
+  background-color: var(--color-bg-light); /* Fundo cinza bem claro no hover. */
+  border-color: var(
+    --color-secondary-light,
+    #fab179
+  ); /* Borda laranja clara. */
+  color: var(--color-text-light); /* Texto mais escuro no hover. */
+  transform: translateY(-1px); /* Leve elevação. */
+}
+
+/* Estilo para o item da lista de país que está ATUALMENTE DESTACADO
+   (quando o mouse está sobre ele E o estado 'paisDestacado' no componente corresponde). */
+.countryListItemHighlighted {
+  background-color: var(
+    --color-secondary
+  ); /* Cor de fundo laranja (principal secundária). */
+  color: white; /* Texto branco para contraste. */
+  border-color: var(--color-secondary-darker); /* Borda laranja escura. */
+  font-weight: bold; /* Texto em negrito para destaque. */
+  transform: scale(1.05); /* Aumenta um pouco o tamanho. */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Sombra sutil. */
+}
+
+/* Classe utilitária para texto "muted" (acinzentado), se necessário dentro desta seção. */
+.textMuted {
+  font-style: italic;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+/* --- MEDIA QUERIES (AJUSTES RESPONSIVOS) --- */
+
+/* Para telas com largura mínima de 640px (Tailwind 'sm', tablets pequenos). */
+@media (min-width: 640px) {
+  .mapDisplay {
+    height: 380px; /* Aumenta a altura do mapa. */
+  }
+  .sectionTitle {
+    font-size: 1.6rem; /* Título da seção maior. */
+  }
+  .countryListItem {
+    font-size: 0.9em; /* Itens da lista um pouco maiores. */
+  }
+}
+
+/* Para telas com largura mínima de 768px (Tailwind 'md', tablets maiores). */
+@media (min-width: 768px) {
+  .mapDisplay {
+    height: 420px; /* Altura do mapa ainda maior. */
+    max-width: 800px; /* Mapa pode ser um pouco mais largo. */
+  }
+  .mapIntroText,
+  .countryListFallback {
+    padding-left: 0; /* Remove padding lateral se o container principal já centraliza. */
+    padding-right: 0;
+  }
+}
+
+/* Para telas com largura mínima de 1024px (Tailwind 'lg', desktops). */
+@media (min-width: 1024px) {
+  .mapDisplay {
+    height: 450px; /* Altura final para desktops. */
+    max-width: 900px; /* Largura máxima final. */
+  }
+  .sectionTitle {
+    font-size: 1.75rem;
+  }
+  .mapIntroText {
+    font-size: 1rem;
+  }
+}
+
+/* ===================================================================================
+   NOTAS ADICIONAIS PARA OS ALUNOS SOBRE ESTE CSS E O MAPCOMPONENT:
+
+   - Integração com Bibliotecas Externas (Leaflet):
+     Muitas vezes, bibliotecas JavaScript externas (como Leaflet.js) vêm com seu
+     próprio CSS necessário para funcionar. É crucial importar esse CSS
+     (como 'leaflet/dist/leaflet.css') na sua aplicação.
+
+   - CSS Scoping (CSS Modules):
+     Lembre-se que '.mapDisplay' aqui se tornará algo como '.MapComponent_mapDisplay__XYZ123'
+     no HTML final, evitando conflitos com uma classe '.mapDisplay' que possa existir
+     em outro componente.
+
+   - Responsividade do Mapa:
+     A altura do mapa é frequentemente ajustada com Media Queries para diferentes
+     tamanhos de tela, pois uma altura fixa pode não ser ideal para todos os dispositivos.
+     A largura geralmente é '100%' (do seu container) até um 'max-width'.
+
+   - Interatividade CSS (:hover, .countryListItemHighlighted):
+     CSS pode ser usado para fornecer feedback visual imediato a interações do usuário
+     (como passar o mouse sobre um item da lista). O destaque mais forte
+     (.countryListItemHighlighted) é controlado pelo estado do React, que adiciona/remove
+     essa classe dinamicamente.
+
+   - Acessibilidade do Mapa:
+     Mapas interativos podem ser um desafio para acessibilidade. É importante:
+       - Fornecer alternativas textuais para a informação visual do mapa (como a lista de países).
+       - Garantir que os controles do mapa sejam acessíveis via teclado (o Leaflet geralmente cuida disso).
+       - Usar 'aria-labels' e 'title' apropriados para elementos interativos.
+   =================================================================================== */

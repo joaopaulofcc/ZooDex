@@ -1,0 +1,163 @@
+/* Caminho: src/components/Footer.module.css */
+
+/* ===================================================================================
+   ARQUIVO: Footer.module.css
+   DESCRIÇÃO: Este arquivo contém os estilos CSS especificamente para o componente Footer.
+              A extensão '.module.css' significa que ele é um "CSS Module".
+              Isso traz a vantagem do ESCOPO LOCAL para as classes CSS:
+              - Uma classe como '.footer' definida aqui não vai colidir com uma classe
+                '.footer' definida em outro arquivo CSS de outro componente.
+              - O sistema de build do React (Webpack, por exemplo) renomeia as classes
+                para nomes únicos globalmente (ex: 'Footer_footer__a1B2c').
+              - No arquivo Footer.jsx, acessamos essas classes através do objeto 'styles'
+                (ex: styles.footer).
+
+   VARIÁVEIS CSS GLOBAIS (Custom Properties):
+   Podemos (e devemos) usar as variáveis CSS que definimos no arquivo global
+   'src/index.css' (dentro do seletor :root). Por exemplo, para cores, fontes,
+   espaçamentos, etc., usamos `var(--nome-da-variavel)`.
+   =================================================================================== */
+
+/* --- ESTILO PARA O CONTAINER PRINCIPAL DO RODAPÉ (.footer) --- */
+/* Esta classe será aplicada ao elemento <footer /> no Footer.jsx. */
+.footer {
+  /* Alinhamento do Texto: */
+  text-align: center; /* Centraliza todo o conteúdo de texto dentro do rodapé.
+                          Afeta os elementos <p> filhos. */
+
+  /* Espaçamento Interno (Padding):
+      'padding' define o espaço entre o conteúdo do elemento e suas bordas.
+      - `1.5rem 1rem`: Forma abreviada para `padding-top: 1.5rem; padding-right: 1rem; padding-bottom: 1.5rem; padding-left: 1rem;`.
+                       (topo/base | laterais)
+      - 'rem' (Root EM): É uma unidade de medida relativa ao tamanho da fonte do elemento raiz
+                         do documento (a tag <html>). Se a fonte raiz for 16px (padrão comum),
+                         então 1rem = 16px, 1.5rem = 24px. Usar 'rem' para padding e margin
+                         ajuda na escalabilidade e acessibilidade, pois os espaçamentos
+                         se ajustam se o usuário aumentar o tamanho da fonte base do navegador. */
+  padding: 1.5rem 1rem;
+
+  /* Cores: */
+  background-color: #333333; /* Cor de fundo escura para o rodapé.
+                                  NOTA: Para consistência, idealmente usaríamos uma variável CSS global
+                                  se esta cor fosse usada em outros lugares, ex: `var(--color-dark-background);`.
+                                  Como no original estava o valor direto, mantive para referência, mas
+                                  explique aos alunos a vantagem de usar `var()`. */
+  color: #f0f0f0; /* Cor clara para o texto do rodapé, para garantir bom contraste
+                                  com o fundo escuro. Poderia ser `var(--color-text-on-dark);`. */
+
+  /* Posicionamento e Layout (para o "Sticky Footer"):
+      'margin-top: auto;' é uma técnica comum usada em conjunto com Flexbox no container pai
+      (neste caso, o `<div id="root">` que foi configurado com `display: flex; flex-direction: column;`
+      em `src/index.css`).
+      Se o conteúdo principal da página for curto e não preencher toda a altura da tela,
+      'margin-top: auto;' no rodapé fará com que a margem superior do rodapé se expanda
+      para preencher todo o espaço vertical restante, efetivamente "empurrando" o rodapé
+      para a base da janela do navegador. Isso cria o efeito de "sticky footer" sem
+      precisar de posicionamento fixo ou absoluto que poderia cobrir conteúdo. */
+  margin-top: auto;
+
+  /* Tipografia: */
+  font-family: var(
+    --font-secondary,
+    "Open Sans",
+    sans-serif
+  ); /* Define a família de fontes para o rodapé.
+                                                                   Usa a variável global --font-secondary
+                                                                   com fallbacks se ela não estiver definida. */
+  font-size: 0.875rem; /* (14px se 1rem = 16px) Tamanho da fonte um pouco menor que o texto principal
+                           da página, comum para informações de rodapé. */
+  line-height: 1.6; /* Altura da linha para o texto do rodapé. Um valor entre 1.4 e 1.8
+                           geralmente melhora a legibilidade. (1.6 * 0.875rem). */
+}
+
+/* --- ESTILO PARA OS ELEMENTOS DE PARÁGRAFO (<p>) DENTRO DO RODAPÉ --- */
+/* Esta regra CSS se aplica a TODAS as tags <p> que são descendentes
+    de um elemento com a classe '.footer' (ou, mais precisamente,
+    o nome de classe único gerado, como '.Footer_footer__XYZ123 p'). */
+.footer p {
+  /* Margens Verticais:
+      Adiciona um pequeno espaço vertical entre os parágrafos no rodapé.
+      Não queremos que fiquem colados uns nos outros. */
+  margin-top: 0.5rem; /* 0.5rem (8px) de espaço ACIMA de cada parágrafo. */
+  margin-bottom: 0.5rem; /* 0.5rem (8px) de espaço ABAIXO de cada parágrafo. */
+  /* A forma abreviada `margin: 0.5rem 0;` faria o mesmo
+      (0.5rem para topo/base, 0 para esquerda/direita). */
+
+  /* Opcional: Limitar a largura máxima dos parágrafos para melhor leitura,
+      especialmente se o rodapé for muito largo em telas grandes.
+   max-width: 60ch; /* 'ch' é uma unidade relativa à largura do caractere "0" (zero) da fonte atual.
+                      Limitar a largura de linhas de texto a cerca de 45-75 caracteres
+                      (aproximadamente 40-60ch) é bom para legibilidade. */
+  /* margin-left: auto; (Se usar max-width, precisa centralizar se text-align:center no pai não for suficiente) */
+  /* margin-right: auto; */
+}
+
+/* --- ESTILO PARA A SEÇÃO DE "DISCLAIMER" (AVISOS/ATRIBUIÇÕES) (.disclaimer) --- */
+/* Esta classe será aplicada à `div` que agrupa os parágrafos do disclaimer no Footer.jsx. */
+.disclaimer {
+  margin-top: 1.25rem; /* (20px) Espaçamento maior acima da seção de disclaimer
+                          para separá-la visualmente do conteúdo principal do rodapé. */
+  padding-top: 1rem; /* (16px) Espaçamento interno no topo, DENTRO da borda que vamos adicionar abaixo. */
+
+  /* Borda Superior:
+      Adiciona uma linha decorativa no topo desta seção para criar uma separação visual clara.
+      - `1px`: A espessura da linha da borda.
+      - `dashed`: O estilo da linha (tracejada). Outras opções comuns: 'solid' (sólida), 'dotted' (pontilhada).
+      - `#cccccc`: A cor da linha (um cinza claro). Poderia ser `var(--color-border-light)`. */
+  border-top: 1px dashed #cccccc;
+
+  /* Tipografia específica para o disclaimer:
+      Geralmente, textos de disclaimer ou informações legais são um pouco menores e mais discretos. */
+  font-size: 0.75rem; /* (12px se 1rem = 16px, ou 0.75 * 0.875rem se baseado no .footer)
+                          Tamanho da fonte menor para o texto do disclaimer. */
+  color: #e0e0e0; /* Cor do texto um pouco mais clara que o texto principal do rodapé (#f0f0f0),
+                          para dar uma diferenciação sutil, mas ainda legível no fundo escuro.
+                          Certifique-se de que o contraste ainda seja bom para acessibilidade! */
+  line-height: 1.5; /* Altura da linha para o texto do disclaimer. */
+}
+
+/* --- ESTILO PARA OS PARÁGRAFOS (<p>) ESPECIFICAMENTE DENTRO DA SEÇÃO DE DISCLAIMER --- */
+/* Esta regra é mais específica: aplica-se a tags <p> que são descendentes
+    de um elemento com a classe '.disclaimer' (que por sua vez está dentro de '.footer'). */
+.disclaimer p {
+  /* Margens Verticais Menores para os parágrafos do disclaimer:
+      Para que as linhas de texto dentro do disclaimer fiquem um pouco mais próximas
+      umas das outras do que os parágrafos principais do rodapé. */
+  margin-top: 0.3rem; /* (aprox. 5px) */
+  margin-bottom: 0.3rem;
+}
+
+/* ===================================================================================
+    PONTOS IMPORTANTES DE CSS PARA OS ALUNOS REVISAREM NESTE ARQUIVO:
+ 
+    - CSS Modules: Como eles ajudam a evitar conflitos de estilo.
+    - Variáveis CSS (Custom Properties): Como usar `var(--nome-da-variavel)`
+      para cores, fontes, espaçamentos, etc., definidas em `src/index.css`.
+    - Unidades de Medida CSS:
+      - `px` (pixels): Unidade absoluta, tamanho fixo.
+      - `rem` (root em): Relativa ao tamanho da fonte do elemento `<html>`. Ótima para
+                        escalabilidade geral e acessibilidade (se o usuário mudar o
+                        tamanho da fonte base do navegador, os `rem` se ajustam).
+      - `em`: Relativa ao tamanho da fonte do elemento PAI (ou do próprio elemento,
+              se `font-size` estiver definido nele). Útil para elementos que devem
+              escalar em proporção ao seu contexto de texto imediato.
+      - `%` (porcentagem): Relativa a alguma propriedade do elemento pai (ex: `width: 50%`
+                        significa 50% da largura do container pai).
+    - Box Model em CSS:
+      Lembre-se que todo elemento HTML é tratado como uma "caixa". O Box Model descreve
+      como `padding` (espaçamento interno), `border` (borda) e `margin` (espaçamento externo)
+      interagem com as dimensões do conteúdo do elemento.
+      A propriedade `box-sizing: border-box;` (que pode ser definida globalmente em `index.css`)
+      muda o cálculo para que `padding` e `border` sejam INCLUÍDOS na largura/altura
+      total do elemento, o que muitos desenvolvedores acham mais intuitivo.
+    - Propriedades de Layout (Flexbox):
+      O `margin-top: auto;` no `.footer` funciona em conjunto com `display: flex;`
+      e `flex-direction: column;` no elemento pai (`#root`) para criar o efeito
+      de "sticky footer".
+    - Tipografia:
+      Propriedades como `font-family`, `font-size`, `font-weight`, `line-height`, `text-align`
+      são fundamentais para controlar a aparência do texto.
+    - Semântica HTML e CSS:
+      Usar a tag `<footer>` no JSX é semanticamente correto. O CSS deve complementar
+      essa estrutura, tornando-a visualmente clara e agradável.
+    =================================================================================== */

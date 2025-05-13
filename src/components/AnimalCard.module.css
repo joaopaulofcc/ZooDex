@@ -1,0 +1,348 @@
+/* Caminho: src/components/AnimalCard.module.css */
+
+/* ===================================================================================
+   ARQUIVO: AnimalCard.module.css
+   DESCRIÇÃO: Estilos CSS específicos para o componente AnimalCard.
+              Como este é um "CSS Module" (devido à extensão .module.css),
+              todas as classes definidas aqui (ex: .animalCard, .cardInterno)
+              serão escopadas localmente. Isso significa que o React (ou o sistema de build)
+              transformará esses nomes de classes em algo único (ex: AnimalCard_animalCard__XyZ123)
+              quando o CSS for aplicado no navegador. Isso PREVINE CONFLITOS DE ESTILO
+              entre diferentes componentes da sua aplicação.
+
+   VARIÁVEIS CSS GLOBAIS (Custom Properties):
+   Lembre-se que definimos variáveis CSS globais (como --color-card-bg, --color-primary,
+   --border-radius) no arquivo 'src/index.css', dentro do seletor ':root'.
+   Podemos (e devemos!) usar essas variáveis aqui para manter a consistência visual
+   da aplicação. Ex: background-color: var(--color-card-bg);
+   =================================================================================== */
+
+/* --- ESTILO BASE DO CARD (.animalCard) --- */
+/* Esta classe é aplicada ao elemento <article> que envolve todo o card no AnimalCard.jsx. */
+.animalCard {
+  background-color: var(
+    --color-card-bg
+  ); /* Cor de fundo branca (variável global). */
+  border: 1px solid var(--color-border-light); /* Borda cinza clara sutil (variável global). */
+  border-radius: var(
+    --border-radius
+  ); /* Cantos arredondados (8px, variável global). */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave para dar profundidade e destacar o card.
+                                                  Valores: deslocamento-horizontal | deslocamento-vertical | raio-do-blur | cor (preto com 10% de opacidade). */
+  cursor: pointer; /* O cursor do mouse se transforma em uma "mãozinha",
+                                                  indicando visualmente que o card é clicável. */
+  display: flex; /* Ativa o layout Flexbox para os filhos diretos do card. */
+  flex-direction: column; /* Organiza os filhos diretos (.cardInterno e .cardConteudo)
+                                                  em uma coluna (um abaixo do outro). */
+  overflow: hidden; /* MUITO IMPORTANTE: Se algum conteúdo filho (como uma imagem
+                                                  ou as faces do tazo durante a animação de flip)
+                                                  tentar "escapar" das bordas do card, 'overflow: hidden'
+                                                  irá cortá-lo, mantendo o formato do card intacto,
+                                                  especialmente com as bordas arredondadas. */
+
+  /* TRANSIÇÕES SUAVES PARA EFEITOS DE HOVER E FOCO:
+     'transition' permite que mudanças em propriedades CSS ocorram gradualmente,
+     criando uma animação suave em vez de uma mudança abrupta.
+     - 'transform 0.25s ease-out': Anima a propriedade 'transform' (usada no :hover)
+                                   durante 0.25 segundos com uma curva de aceleração 'ease-out'
+                                   (começa rápido, desacelera no final).
+     - 'box-shadow 0.25s ease-out': Anima a 'box-shadow' com as mesmas configurações. */
+  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+
+  outline: none; /* Remove o contorno (outline) padrão que alguns navegadores aplicam
+                    a elementos focáveis. Faremos um estilo de foco customizado
+                    usando :focus-visible para melhor acessibilidade. */
+
+  /* PERSPECTIVE (para o efeito de flip 3D):
+     Esta propriedade é aplicada ao ELEMENTO PAI do(s) elemento(s) que terão transformações 3D.
+     No nosso caso, o .animalCard é o pai do .cardInterno (que vai girar).
+     'perspective' define a "distância" do "observador" (usuário) ao plano Z=0 (o plano do card).
+     - Um valor MENOR (ex: 500px) cria um efeito 3D mais exagerado, com mais distorção de perspectiva.
+     - Um valor MAIOR (ex: 2000px) cria um efeito 3D mais sutil.
+     1000px é um valor comum e equilibrado. Ajuste conforme o tamanho do card e o efeito desejado. */
+  perspective: 1000px;
+
+  min-height: 330px; /* Uma altura mínima para os cards, para que tenham uma aparência
+                        consistente mesmo que o conteúdo de texto seja pequeno. Ajuste conforme necessário. */
+}
+
+/* --- ESTILOS DE INTERAÇÃO PARA O CARD (.animalCard:hover, .animalCard:focus-visible) --- */
+/* :hover -> Estilos aplicados quando o cursor do mouse está SOBRE o card. */
+/* :focus-visible -> Estilos aplicados quando o card está FOCADO via teclado (tecla Tab).
+                     Esta pseudo-classe é ótima para acessibilidade porque não aplica o estilo
+                     de foco se o usuário apenas clicar no elemento com o mouse (a menos que
+                     o navegador determine que o foco visual é necessário após o clique). */
+.animalCard:hover,
+.animalCard:focus-visible {
+  /* 'transform' permite mover, girar, escalar elementos. */
+  transform: translateY(-6px) scale(1.03); /* Move o card 6px para CIMA e aumenta seu tamanho em 3%.
+                                             Isso cria um efeito de "elevação" sutil. */
+  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.16); /* Sombra mais pronunciada e um pouco mais espalhada
+                                                 para realçar o card quando está ativo/focado. */
+}
+
+/* Estilo de foco customizado ESPECÍFICO para :focus-visible (navegação por teclado). */
+.animalCard:focus-visible {
+  /* Usamos múltiplas box-shadows para criar um "anel de foco" mais claro e acessível.
+     As sombras são aplicadas na ordem em que são definidas. */
+  box-shadow: 0 0 0 2px var(--color-bg-light),
+    /* 1. Anel interno claro (cor de fundo da página, cria um "espaço"). */ 0 0
+      0 4px var(--color-secondary-darker),
+    /* 2. Anel externo com a cor secundária mais escura (laranja escuro). */ 0
+      7px 14px rgba(0, 0, 0, 0.18); /* 3. Mantém a sombra de elevação que já aplicamos no hover. */
+}
+
+/* --- ESTILOS PARA O "TAZO" QUE VIRA (EFEITO DE FLIP 3D) --- */
+
+/* .cardInterno: Este é o <div> DENTRO do .animalCard que realmente vai executar a animação de giro.
+   Ele contém as duas "faces" do tazo (frente e verso). */
+.cardInterno {
+  position: relative; /* Necessário para que seus filhos com 'position: absolute' (as faces)
+                         sejam posicionados em relação a ele. */
+  width: 100%; /* Ocupa toda a largura do .animalCard. */
+  height: 200px; /* ALTURA FIXA PARA A ÁREA DO TAZO. Ajuste esta altura
+                         conforme o design e a proporção das suas imagens de tazo.
+                         No AnimalCard.jsx, as imagens também tentarão preencher esta altura. */
+  margin-bottom: 0.75rem; /* (12px) Espaço abaixo da área do tazo, antes do conteúdo de texto. */
+
+  /* TRANSIÇÃO DA ANIMAÇÃO DE FLIP:
+     Define como a mudança na propriedade 'transform' (que causa o giro) deve ser animada. */
+  transition: transform 0.65s cubic-bezier(0.42, 0, 0.58, 1); /*
+     - 'transform': A propriedade CSS que será animada.
+     - '0.65s': A duração da animação (0.65 segundos).
+     - 'cubic-bezier(...)': Uma "timing function" (função de temporização) que define
+                            a curva de aceleração da animação. Esta curva específica
+                            cria um efeito de giro mais suave e natural (começa e termina
+                            mais devagar, acelera no meio). Existem outras pré-definidas
+                            como 'ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out'.
+  */
+
+  /* TRANSFORM-STYLE: preserve-3d
+     ESSENCIAL para qualquer transformação 3D.
+     Esta propriedade, quando aplicada a um elemento pai (como o .cardInterno),
+     indica que seus elementos filhos devem ser posicionados em um espaço 3D
+     compartilhado, em vez de serem "achatados" no plano do pai.
+     Sem 'preserve-3d', o efeito de flip não pareceria tridimensional. */
+  transform-style: preserve-3d;
+}
+
+/* .cardInternoVirado: Esta classe é ADICIONADA ao .cardInterno via JavaScript
+                     (quando o estado 'estaVirado' no AnimalCard.jsx se torna 'true')
+                     para INICIAR a animação de giro. */
+.cardInternoVirado {
+  /* 'transform: rotateY(180deg);' gira o elemento .cardInterno 180 graus
+     ao redor do seu eixo Y (o eixo vertical que passa pelo centro).
+     Isso faz com que a face do verso, que estava "atrás", venha para a frente. */
+  transform: rotateY(180deg);
+}
+
+/* .cardFace: Estilo COMUM aplicado a AMBAS as faces do tazo (frente e verso).
+   As faces são <div>s dentro do .cardInterno. */
+.cardFace {
+  position: absolute; /* FAZ COM QUE AMBAS AS FACES OCUPEM EXATAMENTE O MESMO LUGAR
+                         e se sobreponham perfeitamente dentro do .cardInterno.
+                         Elas são posicionadas em relação ao .cardInterno (que tem position: relative). */
+  width: 100%; /* Cada face ocupa toda a largura do .cardInterno. */
+  height: 100%; /* Cada face ocupa toda a altura do .cardInterno. */
+
+  /* BACKFACE-VISIBILITY: hidden
+     PROPRIEDADE CRUCIAL para o efeito de flip.
+     Quando um elemento está girado e sua "face de trás" está voltada para o usuário,
+     'backface-visibility: hidden' faz com que essa face de trás se torne INVISÍVEL.
+     Se fosse 'visible' (o padrão), você veria a imagem da face de trás espelhada,
+     o que estragaria o efeito de "virar uma carta".
+     '-webkit-backface-visibility' é um prefixo para compatibilidade com navegadores
+     mais antigos baseados no WebKit (como versões mais antigas do Safari). */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+
+  /* Usamos Flexbox para centralizar a imagem <img> dentro de cada face. */
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente. */
+  align-items: center; /* Centraliza verticalmente. */
+
+  background-color: var(
+    --color-bg-light,
+    #f0f2f5
+  ); /* Cor de fundo de fallback caso a imagem
+                                                       da face não carregue ou tenha transparência. */
+  border-radius: var(
+    --border-radius-small
+  ); /* Um leve arredondamento para as faces do tazo.
+                                                Se os tazos forem circulares, o .cardInterno
+                                                (ou até o .animalCard) deveria ter 'border-radius: 50%'
+                                                e 'overflow: hidden', e as faces herdariam ou teriam
+                                                'border-radius: inherit;'. */
+  overflow: hidden; /* Garante que a imagem dentro da face não escape das bordas
+                       arredondadas da própria face. */
+}
+
+/* .cardFrente: Estilos específicos para a face FRONTAL do tazo.
+   Na verdade, ela não precisa de nenhuma transformação especial, pois já está
+   na posição inicial correta (0 graus de rotação no eixo Y). */
+.cardFrente {
+  /* z-index: 2; (Opcional: Se houvesse problemas estranhos de sobreposição de camadas,
+                   poderíamos tentar usar z-index para forçar a ordem, mas geralmente
+                   'backface-visibility: hidden' é suficiente para o efeito de flip.) */
+}
+
+/* .cardVerso: Estilos específicos para a face do VERSO do tazo.
+   Esta face precisa ser INICIALMENTE ROTACIONADA 180 graus no eixo Y.
+   Por quê? Pense assim:
+   - A frente está a 0 graus.
+   - O verso também estaria a 0 graus, mas "atrás" da frente (se olharmos de um lado).
+   - Se apenas girarmos o .cardInterno em 180 graus, a frente ficaria de costas (invisível),
+     e o verso (que também estava a 0 graus) apareceria, mas estaria espelhado!
+   - Ao pré-rotacionar o .cardVerso em 180 graus, ele começa "de costas para as costas da frente".
+     Quando o .cardInterno gira 180 graus, a frente vai para -180 graus (fica de costas),
+     e o verso, que estava a 180 graus, gira -180 graus (relativo ao seu estado inicial),
+     acabando a 0 graus (180 - 180 = 0, ou 180 + 180 = 360 que é 0), virado corretamente para o usuário. */
+.cardVerso {
+  transform: rotateY(180deg);
+  /* z-index: 1; (Opcional) */
+}
+
+/* .cardImagem: Estilo para a tag <img> dentro de cada .cardFace. */
+.cardImagem {
+  display: block; /* 'display: block' em imagens remove qualquer espaço extra
+                     que possa aparecer abaixo delas devido ao seu comportamento 'inline' padrão. */
+  width: 100%; /* Faz a imagem tentar preencher 100% da largura da .cardFace. */
+  height: 100%; /* Faz a imagem tentar preencher 100% da altura da .cardFace. */
+
+  /* OBJECT-FIT: Controla como a imagem se ajusta dentro das dimensões da .cardFace.
+     - 'contain': Redimensiona a imagem para CABER COMPLETAMENTE dentro do container
+                  mantendo sua proporção original. Se a proporção da imagem for
+                  diferente da proporção da .cardFace, isso pode deixar espaços vazios
+                  (preenchidos pela 'background-color' da .cardFace).
+                  Para tazos, 'contain' é geralmente uma boa escolha para garantir
+                  que toda a arte do tazo seja visível.
+     - 'cover': Redimensiona a imagem para COBRIR COMPLETAMENTE a área do container,
+                mantendo sua proporção. Se a proporção da imagem for diferente,
+                partes da imagem podem ser CORTADAS para evitar espaços vazios.
+     - 'fill': Estica a imagem para preencher o container, IGNORANDO a proporção.
+               Isso geralmente DISTORCE a imagem e deve ser evitado.
+     - 'scale-down': Comporta-se como 'none' (tamanho original) ou 'contain',
+                     o que resultar em uma imagem menor.
+     - 'none': A imagem é exibida em seu tamanho original, podendo ser cortada. */
+  object-fit: contain;
+}
+/* --- FIM DOS ESTILOS ESPECÍFICOS PARA O EFEITO DE FLIP --- */
+
+/* --- ESTILOS PARA O CONTEÚDO DE TEXTO (ABAIXO DO TAZO) --- */
+
+/* .cardConteudo: O <div> que agrupa o nome do animal e seu status de extinção.
+   Esta parte fica abaixo do .cardInterno (o tazo que vira) e está sempre visível. */
+.cardConteudo {
+  padding: 0 1rem 1rem 1rem; /* Espaçamento interno:
+                                - 0 no topo (pois o .cardInterno já tem 'margin-bottom').
+                                - 1rem nas laterais (esquerda/direita).
+                                - 1rem na base. */
+  flex-grow: 1; /* Se o .animalCard (que é flex-direction: column) tiver mais altura
+                    do que o necessário para o .cardInterno e este .cardConteudo,
+                    'flex-grow: 1' faz com que este .cardConteudo se "estique"
+                    verticalmente para preencher o espaço restante.
+                    Isso é útil para alinhar o .statusExtincao na parte de baixo
+                    consistentemente, mesmo que os nomes dos animais tenham alturas diferentes. */
+  display: flex; /* Também usamos Flexbox aqui dentro para organizar o bloco de nomes
+                     e o status de extinção. */
+  flex-direction: column; /* Os filhos do .cardConteudo (bloco de nomes e status)
+                             serão empilhados verticalmente. */
+  justify-content: space-between; /* Se houver espaço vertical extra dentro do .cardConteudo
+                                     (devido ao flex-grow), 'space-between' colocará
+                                     o primeiro filho (bloco de nomes) no topo e o último
+                                     filho (.statusExtincao) na base. */
+  gap: 0.5rem; /* (8px) Adiciona um espaço mínimo entre o bloco de nomes e o status,
+                  caso não haja muito espaço para o 'space-between' atuar. */
+}
+
+/* .animalNome: Estilo para o nome comum do animal (tag <h3> no JSX). */
+.animalNome {
+  font-family: var(--font-primary); /* Fonte Nunito (variável global). */
+  font-size: 1.25rem; /* (20px) Tamanho da fonte. */
+  font-weight: 700; /* Peso da fonte (bold). */
+  color: var(--color-primary); /* Cor primária da aplicação (verde escuro). */
+  margin-top: 0.25rem; /* Pequena margem acima do nome. */
+  margin-bottom: 0.15rem; /* Pequena margem abaixo, antes do nome científico. */
+  line-height: 1.25; /* Altura da linha. Importante se o nome tiver mais de uma linha. */
+  /* word-break: break-word; (Opcional: se nomes muito longos sem espaços precisarem quebrar) */
+}
+
+/* .nomeCientifico: Estilo para o nome científico (tag <p> com <em> no JSX). */
+.nomeCientifico {
+  font-family: var(--font-secondary); /* Fonte Open Sans (variável global). */
+  font-size: 0.8rem; /* (aprox. 13px) Tamanho da fonte menor. */
+  font-style: italic; /* Estilo itálico, comum para nomes científicos. */
+  color: var(--color-text-muted); /* Cor de texto secundária (cinza médio). */
+  margin-bottom: 0.5rem; /* Margem abaixo, antes do status de extinção (se o gap não for suficiente). */
+  word-break: break-word; /* Permite que nomes científicos longos (especialmente se sem espaços)
+                             quebrem a linha para não "estourar" a largura do card. */
+  line-height: 1.3; /* Altura da linha. */
+}
+
+/* .statusExtincao: Estilo para a "etiqueta" (badge) que mostra o status de extinção. */
+.statusExtincao {
+  padding: 0.25rem 0.6rem; /* Espaçamento interno pequeno para a etiqueta. */
+  border-radius: var(--border-radius-small); /* Cantos arredondados (4px). */
+  font-weight: bold; /* Texto da etiqueta em negrito. */
+  font-size: 0.75rem; /* (12px) Tamanho de fonte pequeno para a etiqueta. */
+  text-align: center; /* Centraliza o texto dentro da etiqueta. */
+  color: var(
+    --color-text-light
+  ); /* Cor do texto (escura).
+                                     A COR DE FUNDO é definida dinamicamente via JavaScript
+                                     no AnimalCard.jsx (usando a prop 'style').
+                                     É importante que esta cor de texto tenha bom contraste
+                                     com TODAS as possíveis cores de fundo do status. */
+  align-self: flex-start; /* Faz com que a etiqueta ocupe apenas a largura do seu conteúdo
+                             (não se estica para 100% da largura do .cardConteudo)
+                             e se alinha à esquerda (início do eixo transversal do flex container pai). */
+  margin-top: auto; /* Se 'justify-content: space-between' no .cardConteudo não for suficiente
+                       para empurrar esta etiqueta para baixo (ex: se o nome do animal for muito curto),
+                       'margin-top: auto' ajudará a ocupar o espaço vertical restante acima dela. */
+}
+
+/* --- MEDIA QUERIES (AJUSTES PARA TELAS MAIORES) --- */
+/* Estes estilos são aplicados apenas quando a largura da tela atinge certos "breakpoints". */
+
+/* Para telas com largura mínima de 640px (considerado 'small' ou 'sm' em frameworks como Tailwind). */
+@media (min-width: 640px) {
+  .animalNome {
+    font-size: 1.4rem; /* (aprox. 22px) Nome do animal um pouco maior em telas maiores. */
+  }
+  .nomeCientifico {
+    font-size: 0.9rem; /* (aprox. 14px) Nome científico um pouco maior. */
+  }
+  .cardInterno {
+    height: 220px; /* A área do tazo pode ser um pouco maior em telas maiores.
+                      Lembre-se de que as imagens dos tazos devem ter boa resolução para isso. */
+  }
+  .animalCard {
+    min-height: 360px; /* A altura mínima total do card também pode aumentar. */
+  }
+}
+
+/* Para telas com largura mínima de 1024px (considerado 'large' ou 'lg'). */
+@media (min-width: 1024px) {
+  .cardInterno {
+    height: 240px; /* Tazo ainda um pouco maior para telas de desktop. */
+  }
+  .animalCard {
+    min-height: 380px;
+  }
+}
+
+/* ===================================================================================
+   RECAPITULANDO CONCEITOS CSS IMPORTANTES AQUI:
+
+   - CSS Modules: Escopo local para classes, evitando conflitos.
+   - Variáveis CSS (Custom Properties): Uso de `var(--nome-variavel)` para consistência.
+   - Flexbox: Para layout dos conteúdos internos do card.
+   - Perspective e 3D Transforms: Para o efeito de flip (`perspective`, `transform-style`,
+     `transform: rotateY()`, `backface-visibility`).
+   - Transitions: Para animações suaves nas mudanças de estado (hover, flip).
+   - Pseudo-classes: `:hover`, `:focus-visible` (para interatividade e acessibilidade).
+   - Unidades Relativas: `rem` (para fontes e espaçamentos escaláveis).
+   - Media Queries: Para design responsivo, ajustando estilos para diferentes tamanhos de tela.
+   - Box Model: Como `padding`, `border`, `margin` e `overflow` afetam o layout.
+   - Object-fit: Para controlar como as imagens se ajustam em seus containers.
+   =================================================================================== */

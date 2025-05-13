@@ -1,0 +1,602 @@
+/* Caminho: src/components/AnimalDetail.module.css */
+
+/* ===================================================================================
+   ARQUIVO: AnimalDetail.module.css
+   DESCRIÇÃO: Estilos CSS para o componente AnimalDetail.
+              Este arquivo utiliza CSS Modules, o que significa que todas as classes
+              definidas aqui (ex: .detailContainer) são escopadas localmente
+              para o AnimalDetail.jsx. Isso evita conflitos de nomenclatura com
+              outros arquivos CSS na aplicação.
+   =================================================================================== */
+
+/* --- CONTAINER PRINCIPAL DA PÁGINA DE DETALHES (.detailContainer) --- */
+/* Aplica-se à tag <article> que envolve todo o conteúdo da página de detalhes. */
+.detailContainer {
+  background-color: var(--color-card-bg); /* Fundo branco, usando uma variável CSS global. */
+  padding: 1rem; /* Espaçamento interno inicial (para telas pequenas - mobile-first).
+                    1rem em todos os lados (topo, direita, base, esquerda). */
+  border-radius: var(--border-radius); /* Cantos arredondados (8px, variável global). */
+  box-shadow: 0 4px 12px var(--color-shadow); /* Sombra para dar um efeito de profundidade.
+                                                 (deslocamento-x deslocamento-y raio-do-blur cor-da-sombra) */
+  margin-top: 1rem; /* Espaço acima do container, separando-o de elementos anteriores. */
+  /* Opcional: Se o App.js não controlar a largura máxima, podemos definir aqui: */
+  /* max-width: 960px; */
+  /* margin-left: auto; */ /* Para centralizar se max-width for usado aqui. */
+  /* margin-right: auto; */
+}
+
+/* --- BOTÃO "VOLTAR À LISTA" (.backButton) --- */
+.backButton {
+  background-color: var(--color-secondary); /* Cor de fundo laranja (variável global). */
+  color: white; /* Cor do texto branca para contraste. */
+  border: none; /* Remove a borda padrão do navegador para botões. */
+  padding: 0.7rem 1.3rem; /* Espaçamento interno para dar tamanho ao botão. */
+  border-radius: var(--border-radius); /* Cantos arredondados. */
+  font-family: var(--font-primary); /* Fonte principal (Nunito). */
+  font-size: 0.9rem; /* Tamanho da fonte. */
+  font-weight: bold; /* Texto em negrito. */
+  cursor: pointer; /* O cursor do mouse vira uma "mãozinha", indicando clicabilidade. */
+  /* Transições suaves para efeitos de hover/focus: */
+  transition: background-color 0.2s ease-out, transform 0.15s ease-out, box-shadow 0.2s ease-out;
+  margin-bottom: 2rem; /* Um bom espaço abaixo do botão, antes do conteúdo principal. */
+  display: inline-flex; /* Permite alinhar o emoji (que se comporta como texto) com o texto do botão. */
+  align-items: center; /* Centraliza verticalmente o emoji e o texto. */
+  gap: 0.5rem; /* Espaço entre o emoji da seta e o texto "Voltar à Lista". */
+}
+/* Efeito ao passar o mouse (:hover) ou quando o botão está focado via teclado (:focus-visible). */
+.backButton:hover,
+.backButton:focus-visible {
+  background-color: var(--color-secondary-darker); /* Laranja mais escuro (definir esta variável em :root). */
+  transform: translateY(-2px); /* Leve "salto" para cima. */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Sombra sutil para o efeito de elevação. */
+}
+/* Estilo de foco específico para acessibilidade (navegação por teclado). */
+.backButton:focus-visible {
+  outline: 3px solid var(--color-primary-darker); /* Contorno verde escuro bem visível. */
+  outline-offset: 2px; /* Pequeno espaço entre o botão e o contorno. */
+}
+
+
+/* --- CABEÇALHO DA PÁGINA DE DETALHES (.detailHeader) --- */
+/* Este <header> interno contém o tazo, nome, status de extinção. */
+.detailHeader {
+  text-align: center; /* Centraliza todo o conteúdo do cabeçalho. */
+  margin-bottom: 2.5rem; /* Espaço maior abaixo do cabeçalho, antes das seções de detalhes. */
+  padding-bottom: 2rem; /* Espaçamento interno na base do cabeçalho. */
+  /* A borda inferior é estilizada dinamicamente via JavaScript (inline style)
+     usando a cor do nível de extinção do animal. Ex:
+     border-bottom: 5px solid var(--color-lc); */
+}
+
+/* --- ESTILOS PARA O TAZO QUE VIRA NO CABEÇALHO --- */
+/* .headerTazoContainer: O container externo do tazo, controla perspectiva e interações. */
+.headerTazoContainer {
+  width: 100%; /* Ocupa a largura disponível, mas limitado pelo max-width. */
+  max-width: 220px; /* Largura máxima do tazo. Ajuste conforme o design. */
+  height: 220px;    /* Altura do tazo. Para tazos circulares, altura = largura. */
+  margin-left: auto; /* Centraliza o tazo horizontalmente. */
+  margin-right: auto;
+  margin-bottom: 1.8rem; /* Espaço abaixo do tazo, antes do nome do animal. */
+  perspective: 900px;  /* Profundidade da "cena" 3D para o efeito de giro. */
+  cursor: pointer;       /* Indica que o tazo é clicável (para abrir no lightbox). */
+  display: block;        /* Necessário para que 'margin: auto' funcione corretamente. */
+  border-radius: 50%;    /* FAZ O TAZO SER CIRCULAR.
+                            Se seus tazos forem quadrados com cantos arredondados,
+                            use 'var(--border-radius)' ou um valor específico em 'px'. */
+  outline: none;         /* Remove o contorno padrão do navegador ao focar. */
+  -webkit-tap-highlight-color: transparent; /* Remove o destaque azul/cinza ao tocar em dispositivos móveis. */
+  border: 3px solid transparent; /* Borda inicial transparente, para o efeito de foco. */
+  transition: border-color 0.2s ease-out, transform 0.2s ease-out; /* Transições suaves. */
+}
+/* Efeito de hover sutil no container do tazo. */
+.headerTazoContainer:hover {
+  /* border-color: var(--color-secondary-light, #fde6d4); (Um laranja bem claro) */
+  transform: scale(1.02); /* Leve aumento de tamanho. */
+}
+/* Estilo de foco visível para o tazo (navegação por teclado). */
+.headerTazoContainer:focus-visible {
+  border-color: var(--color-secondary); /* Borda laranja para indicar foco. */
+  /* Adiciona um "anel" externo para maior destaque do foco. */
+  box-shadow: 0 0 0 3px var(--color-bg-light), /* Anel interno da cor de fundo da página. */
+              0 0 0 5px var(--color-secondary); /* Anel externo laranja. */
+}
+
+/* .headerTazoInner: O elemento interno que realmente executa a rotação 3D. */
+.headerTazoInner {
+  position: relative; /* Para que as faces (.headerTazoFace) se posicionem dentro dele. */
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s cubic-bezier(0.45, 0.05, 0.55, 0.95); /* Animação de giro mais elaborada. */
+  transform-style: preserve-3d; /* ESSENCIAL: Permite que os filhos sejam tratados em 3D. */
+  border-radius: inherit; /* Herda o 'border-radius' do .headerTazoContainer (ex: 50% para círculo). */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* Sombra sutil no próprio tazo. */
+}
+
+/* .headerTazoInnerFlipped: Classe aplicada ao .headerTazoInner quando deve estar virado. */
+.headerTazoInnerFlipped {
+  transform: rotateY(180deg); /* Gira o elemento 180 graus no eixo Y. */
+}
+
+/* .headerTazoFace: Estilo comum para a frente e o verso do tazo. */
+.headerTazoFace {
+  position: absolute; /* Sobrepõe as duas faces no mesmo lugar. */
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden; /* CRUCIAL: Esconde a face que está "de costas" para o usuário. */
+  -webkit-backface-visibility: hidden; /* Prefixo para compatibilidade com Safari. */
+  display: flex; /* Para centralizar a imagem dentro da face. */
+  justify-content: center;
+  align-items: center;
+  border-radius: inherit; /* Herda o border-radius (ex: 50%). */
+  overflow: hidden; /* Garante que a imagem não saia das bordas arredondadas da face. */
+  background-color: var(--color-bg-light, #f0f2f5); /* Cor de fundo de fallback. */
+}
+/* Imagem dentro da face do tazo. */
+.headerTazoFace img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 'cover' para preencher o círculo/quadrado do tazo, pode cortar se a proporção
+                        da imagem for diferente. 'contain' mostraria a imagem inteira, podendo
+                        deixar espaços. Para tazos, 'cover' costuma ficar melhor se as imagens
+                        forem preparadas para isso. */
+}
+
+/* .headerTazoFront: A face da frente. Já está na posição correta. */
+.headerTazoFront { /* Nenhum estilo de transformação específico necessário aqui. */ }
+
+/* .headerTazoBack: A face do verso. Precisa ser pré-rotacionada. */
+.headerTazoBack {
+  transform: rotateY(180deg); /* Inicia virada de costas. */
+}
+
+/* .imagePlaceholder: Usado quando uma imagem (tazo ou galeria) não pode ser carregada. */
+.imagePlaceholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  color: var(--color-text-muted); /* Cinza médio para o texto. */
+  font-size: 0.9rem;
+  background-color: #e9ecef; /* Fundo cinza claro. */
+  border-radius: inherit; /* Herda o border-radius do seu container pai. */
+  padding: 15px; /* Espaçamento interno para o texto não colar nas bordas. */
+  box-sizing: border-box; /* Padding não aumenta o tamanho total. */
+  text-align: center; /* Centraliza o texto. */
+  border: 1px dashed var(--color-border-light); /* Borda tracejada sutil. */
+}
+
+/* .detailImageLarge: Estilo para uma imagem principal grande, usada como fallback
+                     se as imagens do tazo não estiverem disponíveis, mas houver
+                     uma imagem na galeria para destacar. */
+.detailImageLarge {
+  width: 100%;
+  max-width: 320px; /* Largura máxima da imagem de destaque. */
+  height: auto; /* Altura se ajusta à proporção. */
+  max-height: 320px; /* Altura máxima para não ficar muito grande. */
+  object-fit: cover; /* Preenche a área, mantendo proporção (pode cortar). */
+  border-radius: var(--border-radius);
+  margin-left: auto; margin-right: auto; /* Centraliza. */
+  margin-bottom: 1.5rem; /* Espaço abaixo. */
+  display: block; /* Para que margin:auto funcione. */
+  box-shadow: 0 5px 15px var(--color-shadow);
+  background-color: #f0f0f0; /* Fundo enquanto carrega. */
+}
+
+
+/* --- TÍTULOS E STATUS DE EXTINÇÃO (dentro do .detailHeader) --- */
+.animalNameTitle {
+  font-family: var(--font-primary);
+  font-size: 2.2rem; /* Tamanho para telas pequenas/médias. */
+  font-weight: 800; /* Nunito Extra-Bold. */
+  margin: 0.75rem 0 0.2rem 0; /* Margens: topo | laterais | base. */
+  color: var(--color-primary);
+  line-height: 1.15; /* Altura da linha um pouco mais justa para títulos grandes. */
+}
+.scientificNameDetail {
+  font-family: var(--font-secondary);
+  font-size: 1.3rem;
+  font-weight: 400; /* Open Sans Regular. */
+  font-style: italic;
+  color: #455a64; /* Um tom de cinza-azulado mais escuro e sóbrio. */
+  margin-top: 0.25rem;
+  display: block;
+  width: 100%;
+  line-height: 1.3;
+}
+.scientificNameDetail em { /* Garante que o estilo itálico seja aplicado. */
+  font-style: italic;
+}
+
+/* Banner/etiqueta para o status de extinção. */
+.extinctionBanner {
+  padding: 0.7rem 1.2rem; /* Mais espaçamento interno. */
+  border-radius: var(--border-radius-small); /* Cantos menos arredondados que o card. */
+  color: var(--color-text-light);
+  margin-top: 1.25rem; /* Mais espaço acima. */
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  font-weight: 600; /* Semi-bold para o texto do banner. */
+}
+.extinctionBanner h2 {
+  margin: 0;
+  font-size: 1.1rem; /* Ajuste conforme necessário. */
+  line-height: 1.4;
+}
+
+/* Escala visual dos níveis de extinção. */
+.extinctionScaleVisual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px; /* Espaço um pouco maior entre os indicadores. */
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+.scaleLevel {
+  padding: 0.4rem 0.8rem; /* Mais padding. */
+  font-size: 0.75rem; /* Tamanho da fonte da sigla. */
+  border-radius: var(--border-radius-small);
+  color: var(--color-text-light);
+  font-weight: bold;
+  min-width: 40px; /* Garante espaço para siglas de 2 letras. */
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.2); /* Borda um pouco mais escura. */
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+/* Nível atual do animal na escala. */
+.scaleLevelCurrent {
+  border-width: 2.5px; /* Borda bem destacada. */
+  border-color: var(--color-text-light); /* Cor da borda igual à do texto para unidade. */
+  transform: scale(1.2); /* Aumenta bem o tamanho. */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  z-index: 2; /* Garante que fique na frente de todos os outros. */
+}
+/* Efeito de hover para os outros níveis da escala. */
+.scaleLevel:not(.scaleLevelCurrent):hover {
+  transform: scale(1.1); /* Aumenta um pouco. */
+  box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+  z-index: 1; /* Fica na frente dos não-hovered, mas atrás do current. */
+}
+
+
+/* --- ESTILOS GERAIS PARA SEÇÕES DE INFORMAÇÃO (.detailSection) --- */
+.detailSection {
+  margin-bottom: 2.5rem; /* Mais espaço entre as seções. */
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--color-border-light);
+}
+.detailSection:last-child {
+  border-bottom: none; margin-bottom: 0; padding-bottom: 0;
+}
+
+/* Título de cada seção (H2). */
+.sectionTitle {
+  font-family: var(--font-primary);
+  font-size: 1.5rem; /* Tamanho inicial. */
+  color: var(--color-primary);
+  margin-top: 0; /* Remove margem superior padrão de h2. */
+  margin-bottom: 1.25rem; /* Mais espaço abaixo do título, antes do conteúdo. */
+  border-bottom: 3px solid var(--color-secondary);
+  padding-bottom: 0.6rem;
+  display: inline-block; /* Para a borda se ajustar ao texto. */
+}
+.sectionTitle .icon { /* Emoji no título da seção. */
+  margin-right: 0.75rem; /* Mais espaço. */
+  font-size: 1em; /* Para herdar o tamanho da fonte do título. */
+  vertical-align: -0.1em; /* Alinhamento vertical sutil do emoji. */
+}
+
+/* Subtítulos (H3) dentro de uma seção. */
+.sectionSubtitle {
+  font-family: var(--font-primary);
+  font-size: 1.15rem;
+  color: var(--color-text-light); /* Cor do texto principal, não #333. */
+  margin-top: 1.5rem; /* Mais espaço acima se vier depois de outro conteúdo. */
+  margin-bottom: 0.8rem; /* Mais espaço abaixo, antes da lista/parágrafo. */
+  font-weight: 700; /* Bold. */
+}
+
+/* --- ESTILOS PARA LISTAS (<ul>, <dl>) E ITENS DE LISTA (<li>, <div>) --- */
+.list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0.75rem; /* Espaço acima da lista. */
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem; /* Espaço maior entre os itens da lista. */
+}
+
+.listItem {
+  background-color: #fdfdfd; /* Fundo quase branco, muito sutil. */
+  padding: 0.8rem 1.2rem; /* Mais padding interno. */
+  border-radius: var(--border-radius-small);
+  border-left: 5px solid var(--color-secondary-light, #FFDAB9); /* Borda lateral Pêssego Claro.
+                                                                   Defina --color-secondary-light em :root
+                                                                   ou use um tom de laranja bem claro. */
+  line-height: 1.6; /* Boa altura de linha para legibilidade. */
+  font-size: 0.95rem; /* Tamanho da fonte para o conteúdo dos itens. */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Sombra muito sutil no item. */
+}
+.listItem strong {
+  color: var(--color-primary-darker); /* Verde mais escuro para 'strong'. */
+  font-weight: 700; /* Garante que seja bold. */
+}
+.listItem .icon {
+  margin-right: 0.5rem;
+  color: var(--color-secondary); /* Ícones podem ter a cor secundária. */
+}
+
+/* Estilos para Listas de Definição (<dt>, <dd>) */
+.definitionListDt { /* O termo (ex: "Reino:") */
+  font-weight: 700; /* Bold. */
+  color: var(--color-primary); /* Verde. */
+  margin-bottom: 0.25rem; /* Espaço abaixo do termo, antes da descrição. */
+  font-size: 0.9em; /* Um pouco menor que o texto da descrição. */
+  text-transform: uppercase; /* Deixa o termo em maiúsculas para destaque. */
+  letter-spacing: 0.5px; /* Leve espaçamento entre letras. */
+}
+.definitionListDd { /* A descrição (ex: "Animalia") */
+  margin-left: 0; /* Remove recuo padrão do navegador. */
+  color: var(--color-text-light);
+  font-size: 1em; /* Tamanho relativo ao .listItem. */
+}
+
+/* Parágrafos dentro das seções que podem precisar de margem inferior. */
+.paragraphWithMargin {
+  margin-bottom: 1.2rem; /* Mais espaço abaixo de parágrafos descritivos. */
+  line-height: 1.65; /* Altura de linha generosa para leitura. */
+  color: var(--color-text-light);
+}
+
+
+/* --- GALERIA DE FOTOS ADICIONAIS --- */
+.galleryHint { /* Texto de dica "Clique nas imagens..." */
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-bottom: 1.5rem; /* Mais espaço abaixo da dica. */
+  font-style: italic;
+}
+
+.galleryContainer {
+  display: grid; /* Usando Grid para layout da galeria. */
+  /* Cria colunas que tentam ter no mínimo 260px, e se ajustam para preencher o espaço. */
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem; /* Espaço maior entre as imagens da galeria. */
+  justify-items: center; /* Centraliza os itens na célula do grid se houver espaço. */
+}
+.galleryImage { /* Cada imagem <img> na galeria. */
+  width: 100%; /* Ocupa a largura da célula do grid. */
+  /* height: 220px; (Removido para deixar a proporção natural da imagem controlar, ou definir aspect-ratio) */
+  aspect-ratio: 4 / 3; /* Força uma proporção 4:3 para as imagens, bom para galerias. Ajuste conforme necessário. */
+  object-fit: cover; /* Cobre a área da célula, mantendo proporção (pode cortar). */
+  border-radius: var(--border-radius); /* Cantos arredondados. */
+  box-shadow: 0 4px 10px var(--color-shadow); /* Sombra mais pronunciada. */
+  transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+  background-color: #e0e0e0; /* Fundo cinza mais escuro para imagens carregando. */
+}
+.galleryImageClickable {
+  cursor: zoom-in;
+  position: relative; /* Para o pseudo-elemento do ícone de lupa. */
+}
+.galleryImageClickable:hover {
+  transform: scale(1.05) translateY(-3px); /* Aumenta e levanta um pouco. */
+  box-shadow: 0 8px 18px rgba(0,0,0,0.22); /* Sombra mais forte no hover. */
+}
+.galleryImageClickable:hover::after {
+  content: "🔍";
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(1.7);
+  color: white;
+  background-color: rgba(0, 0, 0, 0.7); /* Fundo mais escuro para a lupa. */
+  padding: 0.8rem; /* Lupa maior. */
+  border-radius: 50%;
+  font-size: 1.8rem; /* Ícone maior. */
+  pointer-events: none;
+  opacity: 1; /* Já começa visível no hover (transição removida para simplicidade, pode ser adicionada). */
+}
+
+
+/* --- SEÇÃO DE FONTE DA INFORMAÇÃO (.sourceSection) --- */
+.sourceSection {
+  margin-top: 0.5rem; /* Espaço acima da seção de fonte. */
+}
+.sourceSection p {
+  margin-bottom: 0.5rem; /* Espaço entre parágrafos na fonte. */
+  font-size: 0.85rem; /* Tamanho da fonte para informações de citação. */
+  color: #424242; /* Cinza bem escuro. */
+  line-height: 1.5;
+}
+.sourceSection strong {
+  font-weight: 600; /* Semi-bold para os rótulos "Citação:", "Link:". */
+  color: var(--color-primary-darker);
+}
+.sourceSection a {
+  color: var(--color-secondary-darker); /* Laranja escuro para o link. */
+  text-decoration: none; /* Remove sublinhado padrão. */
+  font-weight: 600; /* Link em semi-bold. */
+  word-break: break-all; /* Permite que URLs longas quebrem linha. */
+}
+.sourceSection a:hover,
+.sourceSection a:focus-visible {
+  text-decoration: underline; /* Adiciona sublinhado no hover/focus. */
+  color: var(--color-primary); /* Muda para verde no hover/focus. */
+}
+
+
+/* --- TEXTO "MUTED" (.textMuted) --- */
+/* Para mensagens como "Informação não disponível". */
+.textMuted {
+  font-style: italic;
+  color: var(--color-text-muted);
+  font-size: 0.95rem; /* Um pouco maior para ser mais legível. */
+  padding: 0.8rem 0; /* Mais padding vertical. */
+}
+
+/* --- ESTILOS PARA O LIGHTBOX (VISUALIZADOR DE IMAGEM AMPLIADA) --- */
+/* .lightboxBackdrop: O fundo escuro que cobre toda a tela. */
+.lightboxBackdrop {
+  position: fixed; /* Fixo em relação à janela do navegador. */
+  top: 0; left: 0;
+  width: 100vw; /* 100% da largura da viewport. */
+  height: 100vh; /* 100% da altura da viewport. */
+  background-color: rgba(20, 20, 20, 0.92); /* Preto bem escuro com alta opacidade. */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: var(--z-index-modal, 1000); /* Garante que fique na frente de todo o resto. */
+  padding: 20px; /* Espaçamento das bordas da tela para o conteúdo do lightbox. */
+  box-sizing: border-box; /* Padding não aumenta o tamanho total do backdrop. */
+  cursor: zoom-out; /* Indica que clicar no fundo fecha o lightbox. */
+}
+
+/* .lightboxContentWrapper: O container que segura a imagem e os botões de controle. */
+.lightboxContentWrapper {
+  position: relative; /* Para posicionamento absoluto dos botões de navegação/fechar. */
+  display: flex;
+  align-items: center; /* Centraliza verticalmente a imagem e botões. */
+  justify-content: center; /* Centraliza horizontalmente. */
+  width: 100%; /* Ocupa a largura disponível dentro do padding do backdrop. */
+  height: 100%; /* Ocupa a altura disponível. */
+  cursor: default; /* Cursor padrão sobre o conteúdo, não o de zoom-out do backdrop. */
+}
+
+/* .lightboxImageContainer: Container direto da imagem, para aplicar sombras ou bordas se necessário. */
+.lightboxImageContainer {
+  display: flex; /* Para centralizar a imagem se ela for menor que o max-width/height. */
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;  /* Limita ao tamanho do .lightboxContentWrapper. */
+  max-height: 100%;
+  box-shadow: 0 5px 25px rgba(0,0,0,0.4); /* Sombra na imagem ampliada. */
+  background-color: #111; /* Fundo escuro para a imagem, caso ela tenha transparência. */
+}
+
+/* .lightboxImage: A imagem ampliada em si. */
+.lightboxImage {
+  display: block; /* Remove espaço extra abaixo da imagem. */
+  max-width: 100%;  /* Garante que não ultrapasse o .lightboxImageContainer. */
+  max-height: 100vh; /* Garante que não ultrapasse a altura da tela (considerando padding do backdrop). */
+                     /* Pode ser 'calc(100vh - 40px)' se o padding do backdrop for 20px em cada lado. */
+  object-fit: contain; /* Mantém a proporção, garantindo que a imagem inteira seja visível. */
+  border-radius: 3px;
+  user-select: none; /* Impede que o usuário selecione a imagem como texto. */
+  -webkit-user-drag: none; /* Impede que a imagem seja arrastada (Safari). */
+}
+
+/* Estilo base para os botões de navegação (anterior/próximo) e o botão de fechar. */
+.lightboxNavButton,
+.lightboxCloseButton {
+  position: absolute;
+  background-color: rgba(50, 50, 50, 0.7); /* Fundo semi-transparente. */
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Borda sutil. */
+  border-radius: 50%; /* Botões circulares. */
+  width: 48px; /* Tamanho dos botões. */
+  height: 48px;
+  font-size: 2rem; /* Tamanho do ícone (seta/X). */
+  line-height: 46px; /* Ajuste para centralizar verticalmente o ícone. */
+  text-align: center;
+  cursor: pointer;
+  z-index: 1015; /* Acima da imagem. */
+  transition: background-color 0.2s ease-out, transform 0.15s ease-out, opacity 0.2s ease-out;
+  opacity: 0.8; /* Levemente transparentes. */
+  outline: none; /* Remove outline padrão. */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+/* Efeitos de hover e focus para os botões do lightbox. */
+.lightboxNavButton:hover, .lightboxCloseButton:hover,
+.lightboxNavButton:focus-visible, .lightboxCloseButton:focus-visible {
+  background-color: rgba(20, 20, 20, 0.9); /* Mais escuro e opaco. */
+  opacity: 1;
+  transform: scale(1.08); /* Aumenta um pouco. */
+  border-color: rgba(255, 255, 255, 0.4);
+}
+/* Foco visível específico para acessibilidade. */
+.lightboxNavButton:focus-visible, .lightboxCloseButton:focus-visible {
+    outline: 2px solid var(--color-secondary-light, #fab179); /* Contorno laranja claro. */
+    outline-offset: 2px;
+}
+
+/* Posição do botão "Anterior". */
+.lightboxPrevButton {
+  left: 25px; /* Distância da borda esquerda. */
+  top: 50%; /* Alinha ao meio verticalmente. */
+  transform: translateY(-50%); /* Ajuste fino para centralização vertical perfeita. */
+}
+/* Posição do botão "Próximo". */
+.lightboxNextButton {
+  right: 25px; /* Distância da borda direita. */
+  top: 50%;
+  transform: translateY(-50%);
+}
+/* Posição e tamanho do botão "Fechar". */
+.lightboxCloseButton {
+  top: 25px; /* Distância do topo. */
+  right: 25px; /* Distância da direita. */
+  width: 42px; height: 42px; line-height: 40px; font-size: 1.7rem; /* Um pouco menor que os de navegação. */
+}
+
+
+/* --- AJUSTES RESPONSIVOS PARA TELAS MAIORES (MEDIA QUERIES) --- */
+@media (min-width: 768px) { /* Para tablets e desktops. */
+  .detailContainer {
+    padding: 2rem 2.5rem; /* Aumenta o padding do container principal. */
+  }
+  .animalNameTitle {
+    font-size: 2.6rem;
+  }
+  .scientificNameDetail {
+    font-size: 1.5rem;
+  }
+  .extinctionBanner h2 {
+    font-size: 1.25rem;
+  }
+  .scaleLevel {
+    font-size: 0.8rem; padding: 0.45rem 0.9rem; min-width: 45px;
+  }
+  .sectionTitle {
+    font-size: 1.75rem;
+  }
+  .sectionSubtitle {
+    font-size: 1.25rem;
+  }
+  .listItem {
+    font-size: 1rem; padding: 0.9rem 1.3rem;
+  }
+  .galleryImage {
+    /* A altura será definida por aspect-ratio, max-width controla o tamanho. */
+    max-width: 300px; /* Imagens da galeria podem ser maiores. */
+  }
+  .lightboxNavButton, .lightboxCloseButton { width: 52px; height: 52px; line-height: 50px; font-size: 2.2rem; }
+  .lightboxPrevButton { left: 35px; }
+  .lightboxNextButton { right: 35px; }
+  .lightboxCloseButton { top: 35px; right: 35px; width: 46px; height: 46px; line-height: 44px; font-size: 1.8rem; }
+}
+
+@media (min-width: 1024px) { /* Para telas grandes. */
+  .headerTazoContainer { max-width: 260px; height: 260px; }
+  .animalNameTitle { font-size: 3rem; }
+  .scientificNameDetail { font-size: 1.7rem; }
+  .detailContainer {
+    /* max-width: 1024px; (Opcional, se o App.js não controlar) */
+  }
+}
+
+/* Ajustes para telas muito pequenas, se os botões do lightbox ficarem muito grandes ou apertados. */
+@media (max-width: 480px) {
+  .lightboxNavButton { width: 40px; height: 40px; font-size: 1.6rem; line-height: 38px; }
+  .lightboxPrevButton { left: 8px; } /* Mais próximos da borda. */
+  .lightboxNextButton { right: 8px; }
+  .lightboxCloseButton { top: 8px; right: 8px; width: 34px; height: 34px; font-size: 1.5rem; line-height: 32px; }
+  .lightboxBackdrop { padding: 8px; } /* Menos padding no backdrop. */
+
+  .detailContainer { padding: 1rem 0.8rem; } /* Menos padding no container principal. */
+  .sectionTitle { font-size: 1.25rem; }
+  .animalNameTitle { font-size: 1.8rem; }
+  .scientificNameDetail { font-size: 1.05rem; }
+  .headerTazoContainer { max-width: 180px; height: 180px; margin-bottom: 1.2rem; }
+  .galleryImage { aspect-ratio: 1; } /* Imagens da galeria podem ser quadradas em telas pequenas */
+}
