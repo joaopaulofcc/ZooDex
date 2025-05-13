@@ -8,37 +8,45 @@
 //            - Um botão para selecionar um "Animal Surpresa".
 //            - Um campo de texto para o usuário buscar animais por nome.
 //            - Botões para o usuário ordenar a lista de animais.
+//            - Funcionalidade de "encolher" (shrink) ao rolar a página para baixo
+//              para otimizar o espaço em telas menores, especialmente em dispositivos móveis.
 //
 // CONCEITOS PRINCIPAIS DO REACT E JAVASCRIPT UTILIZADOS AQUI:
 //  - Componentes Funcionais: Como este componente é estruturado.
-//  - Props (Propriedades): Como o Header recebe dados e, mais importante, FUNÇÕES
-//                          de seu componente pai (App.js). Essas funções (callbacks)
-//                          permitem que o Header comunique ao App.js as ações do usuário
-//                          (ex: o que foi digitado na busca, qual botão de ordenação foi clicado).
-//                          As props recebidas são:
-//                            - 'onSearch': Função a ser chamada quando o texto na busca muda.
-//                            - 'onSort': Função a ser chamada quando um botão de ordenação é clicado.
-//                            - 'onRandom': Função a ser chamada quando o botão "Animal Surpresa" é clicado.
-//                            - 'initialSearchTerm': O valor inicial para o campo de busca (útil se o App.js
-//                                                   quiser restaurar um termo de busca anterior).
-//  - useState: Hook do React para adicionar ESTADO LOCAL ao componente Header.
-//              Neste caso, usamos para controlar o valor ATUAL do campo de busca.
-//              O campo de busca se torna um "componente controlado" pelo React.
+//  - Props (Propriedades): Como o Header recebe dados e funções de seu componente pai (App.js).
+//                           As props recebidas são:
+//                           - 'onSearch': Função a ser chamada quando o texto na busca muda.
+//                           - 'onSort': Função a ser chamada quando um botão de ordenação é clicado.
+//                           - 'onRandom': Função a ser chamada quando o botão "Animal Surpresa" é clicado.
+//                           - 'initialSearchTerm': O valor inicial para o campo de busca.
+//  - useState: Hook do React para adicionar ESTADO LOCAL ao componente.
+//              Usado para:
+//              1. Controlar o valor ATUAL do campo de busca ('termoDeBuscaDigitado').
+//              2. Controlar se o header deve estar no estado "encolhido" ('headerEncolhido').
+//  - useEffect: Hook do React para executar EFEITOS COLATERAIS.
+//               Usado para adicionar e remover um event listener para o evento de 'scroll' da janela,
+//               permitindo que o header reaja à rolagem da página.
+//  - useRef: Hook do React para criar referências mutáveis que NÃO causam re-renderização quando
+//            seus valores mudam.
+//            Usado para armazenar a última posição do scroll ('ultimaPosicaoScroll') para
+//            determinar a direção da rolagem.
 //  - JSX: A sintaxe para descrever a estrutura da interface do usuário.
-//  - Manipulação de Eventos: Como o componente reage a ações do usuário, como:
-//                           - 'onChange' no campo de busca (quando o usuário digita).
-//                           - 'onClick' nos botões.
-//  - Acessibilidade: Uso de 'aria-label' e 'title' para tornar a interface mais
-//                    acessível para usuários com tecnologias assistivas.
+//  - Manipulação de Eventos: Como o componente reage a ações do usuário ('onChange', 'onClick', 'scroll').
+//  - CSS Modules: Para estilização escopada, evitando conflitos de nomes de classes CSS.
+//  - Acessibilidade: Uso de 'aria-label' e 'title' para melhorar a experiência de usuários
+//                   com tecnologias assistivas.
 // =================================================================================================
 
 // --- 1. IMPORTAÇÕES DE MÓDULOS E FUNÇÕES ---
 
-// Importamos a biblioteca 'React' e o Hook 'useState'.
+// Importamos a biblioteca 'React' e os Hooks 'useState', 'useEffect' e 'useRef'.
 // - React: Essencial para criar o componente e usar JSX.
 // - useState: Permite que o componente Header tenha seu próprio estado interno.
-//           Neste caso, o estado será o texto atual dentro do campo de busca.
-import React, { useState } from "react";
+// - useEffect: Permite executar lógica após a renderização ou quando certas dependências mudam,
+//              ideal para interações com o DOM/BOM como event listeners.
+// - useRef: Permite criar uma referência a um valor que persiste entre renderizações
+//           sem causar uma nova renderização quando o valor é alterado.
+import React, { useState, useEffect, useRef } from "react";
 
 // Importamos o objeto 'styles' do nosso arquivo CSS Module (Header.module.css).
 // Isso nos dá acesso às classes CSS definidas lá de forma escopada,
@@ -48,150 +56,193 @@ import styles from "./Header.module.css";
 // --- 2. DEFINIÇÃO DO COMPONENTE FUNCIONAL 'Header' ---
 
 // O componente Header é uma função que aceita um objeto de 'props' como argumento.
-// Usamos a desestruturação para pegar diretamente as props que esperamos receber do App.js:
-//  - onSearch: Uma função que o App.js nos passou. O Header vai chamá-la sempre que
-//              o usuário digitar algo no campo de busca.
-//  - onSort: Uma função do App.js. O Header vai chamá-la quando um botão de ordenação
-//            for clicado, informando qual tipo de ordenação foi escolhido.
-//  - onRandom: Uma função do App.js. O Header vai chamá-la quando o botão "Animal Surpresa"
-//              for clicado.
-//  - initialSearchTerm: O texto que deve aparecer inicialmente no campo de busca.
-//                       Se não for fornecido, o campo começará vazio.
+// Usamos a desestruturação para pegar diretamente as props que esperamos receber do App.js.
 const Header = ({ onSearch, onSort, onRandom, initialSearchTerm }) => {
-  // --- A. ESTADO LOCAL DO COMPONENTE (para o campo de busca) ---
-  // Usamos 'useState' para criar uma variável de estado chamada 'termoDeBuscaDigitado'.
+  // --- A. ESTADO LOCAL DO COMPONENTE ---
+
+  // Estado para o valor atual do campo de busca.
   // - 'termoDeBuscaDigitado': Armazena o texto ATUAL que está no campo de input da busca.
   // - 'definirTermoDeBuscaDigitado': É a FUNÇÃO que usamos para ATUALIZAR 'termoDeBuscaDigitado'.
   // - `useState(initialSearchTerm || "")`: O valor inicial de 'termoDeBuscaDigitado'.
   //   Se 'initialSearchTerm' foi passado como prop, usamos ele. Senão (||), usamos uma string vazia "".
-  //   Isso faz com que o campo de busca seja um "componente controlado": seu valor é
-  //   controlado pelo estado do React, e não diretamente pelo DOM.
   const [termoDeBuscaDigitado, definirTermoDeBuscaDigitado] = useState(
     initialSearchTerm || ""
   );
 
-  // --- B. FUNÇÃO PARA LIDAR COM MUDANÇAS NO CAMPO DE BUSCA (EVENT HANDLER) ---
+  // NOVO ESTADO: Estado para controlar se o header está "encolhido" ou não.
+  // - 'headerEncolhido': Um booleano (true/false). Se true, uma classe CSS será aplicada
+  //                      para diminuir o tamanho do header.
+  // - 'definirHeaderEncolhido': Função para atualizar o estado 'headerEncolhido'.
+  //   Começa como 'false' (header não encolhido).
+  const [headerEncolhido, definirHeaderEncolhido] = useState(false);
+
+  // NOVO REF: Referência para armazenar a última posição vertical do scroll da página.
+  // Usamos 'useRef' porque queremos manter esse valor entre renderizações, mas
+  // NÃO queremos que a alteração desse valor dispare uma nova renderização por si só.
+  // Começa em 0.
+  const ultimaPosicaoScroll = useRef(0);
+
+  // --- B. EFEITO COLATERAL (useEffect) PARA LIDAR COM O SCROLL DA PÁGINA ---
+  // Este Hook 'useEffect' é responsável por adicionar um listener ao evento de 'scroll'
+  // da janela (window) quando o componente Header é montado no DOM, e remover
+  // esse listener quando o componente é desmontado.
+  useEffect(() => {
+    // Função que será executada toda vez que o usuário rolar a página.
+    const lidarComScroll = () => {
+      // Pega a posição vertical atual do scroll da página.
+      // 'window.pageYOffset' é o padrão, mas 'document.documentElement.scrollTop'
+      // é um fallback para navegadores mais antigos/específicos.
+      const posicaoScrollAtual =
+        window.pageYOffset || document.documentElement.scrollTop;
+
+      // Lógica para determinar se o header deve encolher ou expandir:
+      // 1. Se o usuário está rolando PARA BAIXO (posicaoScrollAtual > ultimaPosicaoScroll.current)
+      //    E já rolou uma certa quantidade (ex: mais que 100 pixels do topo, para evitar
+      //    encolhimento imediato com scrolls pequenos no topo da página).
+      if (
+        posicaoScrollAtual > ultimaPosicaoScroll.current &&
+        posicaoScrollAtual > 100 // Limiar para começar a encolher
+      ) {
+        definirHeaderEncolhido(true); // Encolhe o header
+      }
+      // 2. Se o usuário está rolando PARA CIMA (posicaoScrollAtual < ultimaPosicaoScroll.current)
+      //    OU se o scroll está muito próximo do topo da página (ex: menos de 50 pixels).
+      else if (
+        posicaoScrollAtual < ultimaPosicaoScroll.current ||
+        posicaoScrollAtual <= 50 // Limiar para expandir próximo ao topo
+      ) {
+        definirHeaderEncolhido(false); // Expande o header
+      }
+
+      // Atualiza a 'ultimaPosicaoScroll' com a posição atual para a próxima comparação.
+      // Garante que não seja um valor negativo se o scroll for "elástico" em alguns dispositivos.
+      ultimaPosicaoScroll.current =
+        posicaoScrollAtual <= 0 ? 0 : posicaoScrollAtual;
+    };
+
+    // Adiciona o event listener ao objeto 'window' para o evento 'scroll'.
+    // - 'lidarComScroll': A função a ser chamada.
+    // - '{ passive: true }': Uma otimização que informa ao navegador que esta função
+    //   não chamará 'event.preventDefault()', permitindo um scroll mais suave.
+    window.addEventListener("scroll", lidarComScroll, { passive: true });
+
+    // FUNÇÃO DE LIMPEZA (Cleanup Function):
+    // Esta função é retornada pelo useEffect e será executada quando o componente
+    // Header for DESMONTADO (removido da tela).
+    // É crucial para remover o event listener e evitar memory leaks (vazamentos de memória).
+    return () => {
+      window.removeEventListener("scroll", lidarComScroll);
+    };
+  }, []); // O array de dependências vazio `[]` significa que este useEffect
+  // só será executado UMA VEZ após a montagem inicial do componente
+  // e a função de limpeza será executada UMA VEZ quando o componente for desmontado.
+
+  // --- C. FUNÇÃO PARA LIDAR COM MUDANÇAS NO CAMPO DE BUSCA (EVENT HANDLER) ---
   // Esta função ('lidarComMudancaNaBusca') é chamada TODA VEZ que o usuário digita algo
-  // no campo de input da busca (devido ao atributo 'onChange' no <input />).
-  // O 'evento' é um objeto que o navegador passa para a função, contendo informações
-  // sobre o que aconteceu (neste caso, a mudança no input).
+  // no campo de input da busca.
   const lidarComMudancaNaBusca = (evento) => {
-    // 1. Pegar o novo valor do campo de busca:
-    //    'evento.target' se refere ao elemento HTML <input /> que disparou o evento.
-    //    'evento.target.value' é o texto atual DENTRO desse campo de input.
     const novoValorDoInput = evento.target.value;
-
-    // 2. Atualizar o estado local do Header:
-    //    Chamamos 'definirTermoDeBuscaDigitado' para atualizar nossa variável de estado
-    //    'termoDeBuscaDigitado' com o novo texto que o usuário digitou.
-    //    Isso faz com que o React re-renderize o Header, e o <input /> mostrará o novo valor.
     definirTermoDeBuscaDigitado(novoValorDoInput);
-
-    // 3. Comunicar a mudança para o componente pai (App.js):
-    //    Verificamos se a função 'onSearch' foi realmente passada como prop.
     if (onSearch) {
-      // Se sim, chamamos 'onSearch', passando o 'novoValorDoInput'.
-      // Desta forma, o componente App.js é NOTIFICADO sobre o que o usuário
-      // digitou, e o App.js pode então usar esse termo para filtrar a lista de animais.
-      // Isso é um exemplo de "elevar o estado" (lifting state up) ou, mais precisamente,
-      // de comunicação de filho para pai através de callbacks.
       onSearch(novoValorDoInput);
     }
   };
 
-  // --- C. RETORNO DO JSX (O QUE O COMPONENTE Header VAI RENDERIZAR) ---
+  // --- D. RETORNO DO JSX (O QUE O COMPONENTE Header VAI RENDERIZAR) ---
   // A tag <header> do HTML5 é usada para o container principal do cabeçalho.
+  // A classe CSS do header é dinamicamente construída:
+  // - `styles.header` é sempre aplicada.
+  // - `styles.headerEncolhido` é aplicada CONDICIONALMENTE se o estado `headerEncolhido` for true.
   return (
-    <header className={styles.header}>
-      {/* Wrapper para o conteúdo principal (logo, título, botão surpresa)
-          para ajudar no layout responsivo com Flexbox. */}
+    <header
+      className={`${styles.header} ${
+        headerEncolhido ? styles.headerEncolhido : ""
+      }`}
+    >
+      {/* Wrapper para o conteúdo principal (logo, título, botão surpresa) */}
       <div className={styles.headerContentWrapper}>
         {/* Agrupa o logo e o título. */}
         <div className={styles.logoAndTitle}>
           <img
             src="https://colegiouni.com.br/new_site/wp-content/uploads/2019/04/Logo-Col%C3%A9gio-Unilavras-Oficial_2019-full-white-1.png"
-            alt="Logotipo do Colégio Unilavras. Um escudo azul com um globo terrestre estilizado e o nome Unilavras abaixo." // Texto alternativo bem descritivo.
-            className={styles.logo}
+            alt="Logotipo do Colégio Unilavras. Um escudo azul com um globo terrestre estilizado e o nome Unilavras abaixo."
+            className={styles.logo} // O CSS Module cuidará da mudança de tamanho quando encolhido
           />
-          <h1 className={styles.title}>ZooDex 🐾</h1>{" "}
-          {/* Título da aplicação. */}
+          <h1 className={styles.title}>ZooDex 🐾</h1>
         </div>
 
         {/* Botão "Animal Surpresa":
-            - onClick={onRandom}: Quando clicado, chama a função 'onRandom' que foi
-                                 passada como prop pelo App.js. O App.js então
-                                 cuidará da lógica de selecionar um animal aleatoriamente.
-            - title: Fornece uma dica visual ao passar o mouse sobre o botão. */}
-        <button
-          onClick={onRandom} // Chama a função do App.js
-          className={styles.randomButton}
-          title="Clique para ver informações de um animal escolhido aleatoriamente!"
-        >
-          Animal Surpresa ✨
-        </button>
+            - Pode ser escondido ou ajustado quando o header encolhe.
+            - Neste exemplo, optamos por escondê-lo quando 'headerEncolhido' é true
+              para dar mais espaço para a barra de busca e filtros em telas menores.
+        */}
+        {!headerEncolhido && (
+          <button
+            onClick={onRandom}
+            className={styles.randomButton}
+            title="Clique para ver informações de um animal escolhido aleatoriamente!"
+          >
+            Animal Surpresa ✨
+          </button>
+        )}
       </div>{" "}
       {/* Fim de .headerContentWrapper */}
       {/* Container para o campo de busca. */}
       <div className={styles.searchContainer}>
         <input
-          type="search" // Tipo de input semanticamente correto para buscas.
-          id="search-input" // ID para o input, pode ser útil para labels ou testes.
-          value={termoDeBuscaDigitado} // O valor do input é controlado pelo estado 'termoDeBuscaDigitado'.
-          // Isso o torna um "componente controlado".
-          onChange={lidarComMudancaNaBusca} // Função chamada sempre que o valor do input muda.
-          placeholder="Buscar por nome comum ou científico..." // Texto de ajuda dentro do campo.
-          className={styles.searchInput} // Classe CSS para estilização.
-          aria-label="Campo de busca para encontrar animais por nome comum ou científico" // Descrição para leitores de tela.
+          type="search"
+          id="search-input"
+          value={termoDeBuscaDigitado}
+          onChange={lidarComMudancaNaBusca}
+          placeholder="Buscar por nome comum ou científico..."
+          className={styles.searchInput}
+          aria-label="Campo de busca para encontrar animais por nome comum ou científico"
         />
       </div>{" "}
       {/* Fim de .searchContainer */}
       {/* Container para os botões de ordenação. */}
+      {/* Estes controles permanecem visíveis mesmo quando o header está encolhido,
+          mas o padding geral do header (controlado por .headerEncolhido no CSS)
+          fará com que ocupem menos espaço vertical.
+      */}
       <div className={styles.sortControls}>
-        {/*
-          Cada botão de ordenação, quando clicado, chama a função 'onSort' (passada pelo App.js),
-          enviando uma string que identifica o tipo de ordenação desejado (ex: "name-asc").
-          O App.js usará essa string para reordenar a lista de animais.
-          Usamos arrow functions no onClick (ex: () => onSort("name-asc")) para poder passar
-          um argumento específico para 'onSort' quando o botão é clicado. Se fosse apenas
-          onClick={onSort}, não poderíamos passar o tipo de ordenação diretamente.
-        */}
         <button
-          onClick={() => onSort("name-asc")} // Ordena por nome, de A a Z.
+          onClick={() => onSort("name-asc")}
           className={styles.sortButton}
           aria-label="Ordenar animais por nome em ordem alfabética (A-Z)"
         >
           Nome (A-Z)
         </button>
         <button
-          onClick={() => onSort("name-desc")} // Ordena por nome, de Z a A.
+          onClick={() => onSort("name-desc")}
           className={styles.sortButton}
           aria-label="Ordenar animais por nome em ordem alfabética inversa (Z-A)"
         >
           Nome (Z-A)
         </button>
         <button
-          onClick={() => onSort("risk-asc")} // Ordena por risco, do menor para o maior.
+          onClick={() => onSort("risk-asc")}
           className={styles.sortButton}
           aria-label="Ordenar animais por nível de risco de extinção, do menor para o maior risco"
         >
           Risco (Menor)
         </button>
         <button
-          onClick={() => onSort("risk-desc")} // Ordena por risco, do maior para o menor.
+          onClick={() => onSort("risk-desc")}
           className={styles.sortButton}
           aria-label="Ordenar animais por nível de risco de extinção, do maior para o menor risco"
         >
           Risco (Maior)
         </button>
         <button
-          onClick={() => onSort("codigo-asc")} // Ordena por número do tazo (código), do menor para o maior.
+          onClick={() => onSort("codigo-asc")}
           className={styles.sortButton}
           aria-label="Ordenar animais por número do tazo (código) em ordem crescente"
         >
           Tazo Nº (Crescente)
         </button>
         <button
-          onClick={() => onSort("codigo-desc")} // Ordena por número do tazo (código), do maior para o menor.
+          onClick={() => onSort("codigo-desc")}
           className={styles.sortButton}
           aria-label="Ordenar animais por número do tazo (código) em ordem decrescente"
         >
