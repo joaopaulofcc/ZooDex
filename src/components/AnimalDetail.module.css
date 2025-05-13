@@ -633,26 +633,10 @@
                        e pelo tamanho da célula do grid). Isso evita que a imagem
                        fique achatada ou esticada. */
 
-  /* `aspect-ratio: 4 / 3;` (Comentado para explicação)
-       ALUNOS: `aspect-ratio` é uma propriedade CSS moderna e MUITO útil!
-       Se você definir um `aspect-ratio` (ex: `4 / 3` para paisagem, `1 / 1` para quadrado),
-       o navegador calculará a altura automaticamente com base na largura (ou vice-versa)
-       para FORÇAR a imagem a ter essa proporção.
-       - Se você descomentar esta linha:
-         - Pode precisar remover `height: auto;`.
-         - `object-fit: cover;` (que já temos) se torna ainda mais importante, pois a imagem
-           será cortada para se encaixar na proporção 4:3 definida.
-         - Se você quiser que a imagem inteira apareça DENTRO da proporção 4:3 (o que pode
-           deixar "barras" laterais ou superiores/inferiores se a proporção original
-           da imagem for diferente), você usaria `object-fit: contain;`.
-       - PARA ESTA GALERIA: Como as fotos reais dos animais podem ter proporções variadas
-         (algumas mais quadradas, outras mais paisagem), deixar `height: auto` com
-         `max-width: 100%` é geralmente uma escolha mais SEGURA para garantir que a
-         imagem inteira seja mostrada sem forçar uma proporção que não é a dela.
-         Se TODAS as suas imagens da galeria tivessem a mesma proporção (ex: todas quadradas),
-         então `aspect-ratio: 1 / 1;` seria uma ótima opção. */
+  /* `aspect-ratio: 4 / 3;` (Comentado para explicação - veja a media query para telas muito pequenas
+                               onde usamos `aspect-ratio: unset;` para a correção específica) */
 
-  object-fit: cover; /* Como a altura é `auto` e não temos um `aspect-ratio` fixo,
+  object-fit: cover; /* Como a altura é `auto` e não temos um `aspect-ratio` fixo (neste estado base),
                           `object-fit: cover` aqui terá o efeito de garantir que, se por algum
                           motivo a imagem fosse renderizada em um espaço que não batesse com sua
                           proporção (o que não deve acontecer com `height: auto`), ela preencheria
@@ -664,6 +648,7 @@
   transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
     box-shadow 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
   background-color: #e0e0e0; /* Cor de fundo cinza mais escura enquanto a imagem carrega. */
+  box-sizing: border-box; /* Garante que padding/border (se adicionados) não quebrem o layout. */
 }
 
 /* Adiciona um cursor especial para indicar que a imagem da galeria é clicável (para ampliar). */
@@ -949,7 +934,7 @@
   .galleryImage {
     /* O layout do grid (`.galleryContainer`) já cuida do tamanho das colunas.
          `max-width: 100%` e `height: auto` (ou `aspect-ratio`) no `.galleryImage` base
-         garantem que a imagem caiba na célula do grid.
+         já garantem que ela caiba na célula do grid.
          Se quiséssemos limitar o quão grande uma imagem da galeria pode ficar,
          mesmo que a célula do grid seja muito larga, poderíamos adicionar um `max-width` aqui:
          Exemplo: max-width: 300px;
@@ -1005,7 +990,7 @@
 } /* Fim da media query para min-width: 1024px */
 
 /* Ajustes para telas MUITO PEQUENAS (largura máxima de 480 pixels).
-     Aqui, priorizamos economizar cada pixel! */
+     Aqui, priorizamos economizar cada pixel e garantir que nada estoure! */
 @media (max-width: 480px) {
   /* Botões do Lightbox menores e mais próximos das bordas. */
   .lightboxNavButton {
@@ -1052,19 +1037,37 @@
     margin-bottom: 1.2rem;
   } /* Tazo menor. */
 
-  /* Galeria em Telas MUITO Pequenas: */
+  /* --- CORREÇÃO PARA IMAGENS DA GALERIA EM TELAS MUITO PEQUENAS --- */
+  /* ALUNOS: Aqui está a correção crucial para evitar que as imagens da galeria
+       fiquem mais largas que a tela em dispositivos muito estreitos. */
   .galleryContainer {
-    grid-template-columns: 1fr; /* Força explicitamente UMA ÚNICA COLUNA. */
-    gap: 1rem; /* Gap menor entre as imagens na coluna única. */
+    /* Força a galeria a ter UMA ÚNICA COLUNA.
+         `1fr` significa que a coluna ocupará toda a largura disponível do container da galeria. */
+    grid-template-columns: 1fr;
+    gap: 1rem; /* Gap (espaço) menor entre as imagens na coluna única. */
   }
   .galleryImage {
-    /* A largura já é 100% da célula do grid (que agora tem 1fr de largura).
-         Para permitir que as imagens usem sua proporção natural em uma única coluna estreita: */
-    aspect-ratio: unset; /* Remove qualquer `aspect-ratio` fixo que possa ter sido definido. */
-    height: auto; /* Garante que a altura se ajuste à proporção natural da imagem. */
-    /* Opcional: Limitar a altura máxima se as imagens ficarem muito "altas" na vertical.
-      max-height: 250px;
-      object-fit: contain; // Se usar max-height, 'contain' pode ser melhor para ver a imagem toda.
+    /* Remove qualquer `aspect-ratio` fixo que possa ter sido definido em estilos base
+         ou em outras media queries. Isso permite que a imagem use sua proporção natural. */
+    aspect-ratio: unset;
+
+    /* Garante que a imagem ocupe 100% da largura da célula do grid (que agora é 1fr). */
+    width: 100%;
+    /* Redundante se width: 100% e o container estiver correto, mas seguro.
+         Garante que a imagem não seja renderizada maior que seu container. */
+    max-width: 100%;
+
+    /* ESSENCIAL: A altura se ajusta automaticamente para manter a proporção da imagem. */
+    height: auto;
+
+    /* `box-sizing: border-box;` já está no estilo base de `.galleryImage`,
+         o que é bom para garantir que paddings/borders (se existissem)
+         não aumentassem a largura efetiva. */
+
+    /* Opcional: Se as imagens ficarem muito "altas" em uma única coluna,
+         você poderia limitar a altura máxima delas:
+      max-height: 280px;
+      object-fit: contain; // Se usar max-height, 'contain' pode ser melhor para ver a imagem inteira.
       */
   }
 } /* Fim da media query para max-width: 480px */
@@ -1072,7 +1075,7 @@
 /* ===================================================================================
      NOTAS FINAIS PARA OS ALUNOS (REFORÇANDO OS CONCEITOS MAIS IMPORTANTES):
   
-     - **Imagens Responsivas (`max-width: 100%` e `height: auto`)**:
+     - **Imagens Responsivas (`max-width: 100%;` e `height: auto`)**:
        Esta é a técnica fundamental para garantir que suas imagens se adaptem a diferentes
        larguras de tela sem quebrar o layout ou ficarem distorcidas. A imagem nunca
        será mais larga que seu contêiner pai, e sua altura se ajustará para manter
@@ -1103,6 +1106,8 @@
        é uma forma moderna e elegante de criar um layout que se ajusta automaticamente,
        mostrando quantas colunas de itens couberem na tela, cada uma com um tamanho
        mínimo, mas se expandindo para preencher o espaço se houver.
+       Para a correção em telas muito pequenas, mudamos para `grid-template-columns: 1fr;`
+       para forçar uma única coluna responsiva.
   
      - **Media Queries para Design Adaptativo**:
        O uso de `@media (max-width: ...)` e `@media (min-width: ...)` é o que permite

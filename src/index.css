@@ -30,8 +30,8 @@
   /* -- TIPOGRAFIA -- */
   /* Famílias de fontes principais para a aplicação. */
   --font-primary: "Nunito", Arial, sans-serif; /* Fonte principal, usada para títulos e elementos de destaque.
-                                                  "Nunito" é a preferida. Arial e sans-serif são fallbacks
-                                                  caso Nunito não esteja disponível ou não carregue. */
+                                                 "Nunito" é a preferida. Arial e sans-serif são fallbacks
+                                                 caso Nunito não esteja disponível ou não carregue. */
   --font-secondary: "Open Sans", Verdana, sans-serif; /* Fonte secundária, para texto corrido e parágrafos. */
 
   /* -- PALETA DE CORES PRINCIPAL -- */
@@ -84,6 +84,27 @@
   --z-index-dropdown: 500;
 }
 
+/* --- RESET BÁSICO E BOX-SIZING GLOBAL --- */
+/* ALUNOS: Esta é uma adição MUITO IMPORTANTE e uma prática recomendada! */
+*,
+*::before,
+*::after {
+  /* `box-sizing: border-box;` muda como a largura e altura dos elementos são calculadas.
+     Por padrão (content-box), width/height definem SÓ a área do conteúdo.
+     Padding e border são ADICIONADOS FORA dessa área, o que pode levar a surpresas
+     quando você define `width: 100%` e adiciona padding.
+     Com `border-box`, o padding e a border ficam DENTRO da width/height que você define.
+     Isso torna os layouts MUITO mais previsíveis e fáceis de gerenciar. */
+  box-sizing: border-box;
+  /* Opcional: Remover margens e paddings padrão de todos os elementos para um "reset" mais limpo.
+     Muitos resets CSS fazem isso. Para este projeto, `margin: 0;` no `body` já ajuda bastante.
+     Se você decidir adicionar, teste bem, pois pode afetar o espaçamento de elementos
+     como parágrafos e títulos que têm margens padrão úteis.
+  margin: 0;
+  padding: 0;
+  */
+}
+
 /* --- ESTILOS BASE PARA ELEMENTOS HTML --- */
 
 /* Estilos aplicados à tag <html> e <body> para definir comportamentos básicos da página. */
@@ -92,6 +113,13 @@ html {
                       1rem será igual a 16px. Ajustar este valor pode escalar
                       todos os elementos que usam 'rem' proporcionalmente. */
   scroll-behavior: smooth; /* Habilita rolagem suave quando o usuário clica em links âncora (#). */
+  /* ALUNOS: Adicionar `overflow-x: hidden;` aqui pode ser uma medida "drástica"
+     para evitar barras de rolagem horizontais indesejadas, mas CUIDADO!
+     Isso pode MASCARAR o problema real de um elemento que está vazando.
+     É melhor encontrar e corrigir o elemento culpado. No entanto, para garantir
+     que a página NUNCA tenha rolagem horizontal devido a pequenos erros,
+     alguns desenvolvedores adicionam aqui. */
+  /* overflow-x: hidden; */ /* Use com cautela. */
 }
 
 body {
@@ -118,6 +146,13 @@ body {
                         100vh = 100% da altura da viewport. */
   display: flex; /* Configura o body para usar Flexbox. */
   flex-direction: column; /* Faz com que os filhos diretos do body (como #root) se empilhem verticalmente. */
+
+  /* ALUNOS: Para combater o problema de "zoom out" e garantir que o body não seja
+     influenciado por conteúdo que "vaza", podemos adicionar `overflow-x: hidden;` aqui também.
+     Isso cortará qualquer conteúdo que tente ser mais largo que a tela.
+     Novamente, o ideal é consertar o elemento que está vazando, mas isso pode ser
+     uma salvaguarda. */
+  overflow-x: hidden; /* Impede a rolagem horizontal no corpo da página. */
 }
 
 /*
@@ -130,6 +165,8 @@ body {
   flex-grow: 1; /* Faz com que o #root cresça para ocupar qualquer espaço vertical disponível no body.
                    Isso é importante para que o 'margin-top: auto' no Footer funcione corretamente. */
   width: 100%; /* Garante que o #root ocupe toda a largura. */
+  /* Se o #root também precisar impedir overflow, embora geralmente o body seja suficiente: */
+  /* overflow-x: hidden; */
 }
 
 /* --- ESTILIZAÇÃO DA BARRA DE ROLAGEM (OPCIONAL E ESPECÍFICO DO NAVEGADOR) --- */
@@ -212,6 +249,7 @@ body {
   border-radius: var(--border-radius-small);
 }
 
+/* --- (REMOVIDO DA SUGESTÃO ANTERIOR, POIS VOCÊ INDICOU QUE JÁ ESTAVA NO SEU CÓDIGO) --- */
 /* --- MELHORIA OPCIONAL: BOX-SIZING GLOBAL --- */
 /*
   Pode ser útil adicionar isso para um comportamento mais intuitivo do Box Model:
